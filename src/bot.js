@@ -234,6 +234,17 @@ bot.use(async (ctx, next) => {
 });
 
 
+// Pesan foto tidak bisa diedit sebagai teks: hapus lalu kirim ulang agar menu lain tetap berfungsi
+bot.use(async (ctx, next) => {
+    if (ctx.callbackQuery?.message?.photo) {
+        ctx.editMessageText = async (text, extra) => {
+            await ctx.deleteMessage().catch(() => { });
+            return ctx.reply(text, extra);
+        };
+    }
+    return next();
+});
+
 // Global Safety Guard: Mencegah bot crash jika terjadi gangguan jaringan Pterodactyl / Telegram
 process.on('uncaughtException', (err) => {
     console.error('🛡️ [Bot Guard] Uncaught Exception:', err.message);
@@ -746,6 +757,27 @@ function getMainMenuWelcomeText(userId, ctxFrom = null) {
     return i18n.t(lang, 'menu.title', cleanName);
 }
 
+const WELCOME_PHOTO_PATH = path.join(__dirname, '..', 'assets', 'welcome.jpg');
+let welcomePhotoFileId = null;
+
+// Kirim Menu Utama beserta foto sambutan (fallback ke teks biasa jika foto gagal)
+async function sendWelcomeMenu(ctx, text, kb) {
+    if (ctx.callbackQuery?.message) {
+        await ctx.deleteMessage().catch(() => { });
+    }
+    try {
+        const photo = welcomePhotoFileId || { source: WELCOME_PHOTO_PATH };
+        const sent = await ctx.replyWithPhoto(photo, { caption: text, parse_mode: 'Markdown', ...kb });
+        if (!welcomePhotoFileId && sent?.photo?.length) {
+            welcomePhotoFileId = sent.photo[sent.photo.length - 1].file_id;
+        }
+        return sent;
+    } catch (err) {
+        welcomePhotoFileId = null;
+        return ctx.reply(text, { parse_mode: 'Markdown', ...kb });
+    }
+}
+
 function getLanguageMenuText(userId, ctxFrom = null) {
     const currentLang = getUserLang(userId, ctxFrom);
     const meta = i18n.getLanguageMeta(currentLang);
@@ -791,7 +823,7 @@ bot.start(async (ctx) => {
         return ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
     }
 
-    await ctx.reply(getMainMenuWelcomeText(userId, ctx.from), { parse_mode: 'Markdown', ...getMainKeyboard(userId, ctx.from) });
+    await sendWelcomeMenu(ctx, getMainMenuWelcomeText(userId, ctx.from), getMainKeyboard(userId, ctx.from));
 });
 
 bot.command('cancel', async (ctx) => {
@@ -839,11 +871,7 @@ bot.action(/^set_lang_(\w+)$/, async (ctx) => {
     const text = getMainMenuWelcomeText(userId, ctx.from);
     const kb = getMainKeyboard(userId, ctx.from);
 
-    try {
-        await ctx.editMessageText(text, { parse_mode: 'Markdown', ...kb });
-    } catch {
-        await ctx.reply(text, { parse_mode: 'Markdown', ...kb });
-    }
+    await sendWelcomeMenu(ctx, text, kb);
 });
 
 // Aksi Cek Status Verifikasi Gabung Channel
@@ -865,11 +893,7 @@ bot.action('check_joined', async (ctx) => {
 
     const text = getMainMenuWelcomeText(userId, ctx.from);
 
-    try {
-        await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getMainKeyboard(userId, ctx.from) });
-    } catch {
-        await ctx.reply(text, { parse_mode: 'Markdown', ...getMainKeyboard(userId, ctx.from) });
-    }
+    await sendWelcomeMenu(ctx, text, getMainKeyboard(userId, ctx.from));
 });
 
 bot.action('menu_main', async (ctx) => {
@@ -904,11 +928,7 @@ bot.action('menu_main', async (ctx) => {
 
     const text = getMainMenuWelcomeText(userId, ctx.from);
 
-    try {
-        await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getMainKeyboard(userId, ctx.from) });
-    } catch {
-        await ctx.reply(text, { parse_mode: 'Markdown', ...getMainKeyboard(userId, ctx.from) });
-    }
+    await sendWelcomeMenu(ctx, text, getMainKeyboard(userId, ctx.from));
 });
 
 bot.action('refresh_maintenance', async (ctx) => {
@@ -923,19 +943,12 @@ bot.action('refresh_maintenance', async (ctx) => {
     clearSession(userId);
     const welcomeText = getMainMenuWelcomeText(userId, ctx.from);
     const kb = getMainKeyboard(userId, ctx.from);
-    try {
-        await ctx.editMessageText(welcomeText, { parse_mode: 'Markdown', ...kb });
-    } catch {
-        await ctx.reply(welcomeText, { parse_mode: 'Markdown', ...kb });
-    }
+    await sendWelcomeMenu(ctx, welcomeText, kb);
 });
 
 bot.command(['help', 'bantuan'], async (ctx) => {
     const userId = ctx.from.id;
-    return ctx.reply(getMainMenuWelcomeText(userId, ctx.from), {
-        parse_mode: 'Markdown',
-        ...getMainKeyboard(userId, ctx.from)
-    });
+    return sendWelcomeMenu(ctx, getMainMenuWelcomeText(userId, ctx.from), getMainKeyboard(userId, ctx.from));
 });
 
 // =============================================================
