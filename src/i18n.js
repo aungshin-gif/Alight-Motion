@@ -108,7 +108,7 @@ const translations = {
             error_desc: "Kode link kemungkinan sudah kedaluwarsa atau salah. Silakan coba lagi.",
         },
         bulk: {
-            title: "🗃️ *PAKET MULTI-AKUN*\n────────────\nPilih jumlah akun Alight Motion Pro yang Anda butuhkan:\n\n› Format Hasil : Berkas Dokumen (.txt)\n› Durasi Akun  : 1 Tahun per Akun\n› Batas Sesi   : Hingga 1.000 Akun\n\nPilih paket di bawah atau tentukan sendiri:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Akun",
             btn_15: "15 Akun",
             btn_25: "25 Akun",
@@ -245,7 +245,7 @@ const translations = {
             error_desc: "Link may have expired or is incorrect. Please try again.",
         },
         bulk: {
-            title: "🗃️ *BULK ACCOUNTS PACKAGE*\n────────────\nSelect the quantity of Alight Motion Pro accounts you need:\n\n› Output Format : Document File (.txt)\n› Duration      : 1 Year per Account\n› Session Limit  : Up to 1,000 Accounts\n\nChoose a package below or type your custom amount:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Accounts",
             btn_15: "15 Accounts",
             btn_25: "25 Accounts",
@@ -382,7 +382,7 @@ const translations = {
             error_desc: "Pautan mungkin telah tamat tempoh. Sila cuba lagi.",
         },
         bulk: {
-            title: "🗃️ *PAKEJ MULTI-AKAUN*\n────────────\nPilih jumlah akaun Alight Motion Pro yang anda perlukan:\n\n› Format Hasil : Fail Dokumen (.txt)\n› Tempoh Akaun : 1 Tahun setiap Akaun\n› Had Sesi     : Sehingga 1,000 Akaun\n\nPilih pakej di bawah atau masukkan sendiri:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Akaun",
             btn_15: "15 Akaun",
             btn_25: "25 Akaun",
@@ -519,7 +519,7 @@ const translations = {
             error_desc: "Maaaring nag-expire na ang link. Pakisubukang muli.",
         },
         bulk: {
-            title: "🗃️ *MULTI-ACCOUNT PACKAGE*\n────────────\nPiliin ang dami ng Alight Motion Pro accounts na kailangan mo:\n\n› Format ng File : Dokumento (.txt)\n› Tagal ng Bawat : 1 Taon bawat Account\n› Limitasyon      : Hanggang 1,000 Accounts\n\nPumili sa ibaba o maglagay ng sariling bilang:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Accounts",
             btn_15: "15 Accounts",
             btn_25: "25 Accounts",
@@ -656,7 +656,7 @@ const translations = {
             error_desc: "قد يكون الرابط منتهي الصلاحية أو غير صحيح. يرجى المحاولة ثانية.",
         },
         bulk: {
-            title: "🗃️ *باقة الحسابات الجماعية*\n────────────\nاختر عدد حسابات Alight Motion Pro التي تحتاجها:\n\n› صيغة الملف : مستند نصي (.txt)\n› مدة الحساب : سنة كاملة لكل حساب\n› الحد الأقصى : حتى 1000 حساب لكل جلسة\n\nاختر من الباقات أدناه أو حدد العدد بنفسك:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 حسابات",
             btn_15: "15 حساباً",
             btn_25: "25 حساباً",
@@ -793,7 +793,7 @@ const translations = {
             error_desc: "Возможно, срок действия ссылки истек. Попробуйте снова.",
         },
         bulk: {
-            title: "🗃️ *ПАКЕТ МАССОВЫХ АККАУНТОВ*\n────────────\nВыберите количество аккаунтов Alight Motion Pro:\n\n› Формат Выдачи : Текстовый Файл (.txt)\n› Срок Аккаунта : 1 Год на каждый\n› Лимит Сессии  : До 1000 Аккаунтов\n\nВыберите пакет ниже или укажите свое количество:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Аккаунтов",
             btn_15: "15 Аккаунтов",
             btn_25: "25 Аккаунтов",
@@ -930,7 +930,7 @@ const translations = {
             error_desc: "El enlace puede haber expirado o es incorrecto. Inténtelo de nuevo.",
         },
         bulk: {
-            title: "🗃️ *PAQUETE DE CUENTAS MASIVAS*\n────────────\nElija la cantidad de cuentas Alight Motion Pro que necesita:\n\n› Formato de Entrega : Archivo de Texto (.txt)\n› Duración de Cuenta : 1 Año por Cuenta\n› Límite por Sesión  : Hasta 1.000 Cuentas\n\nElija un paquete abajo o defina su cantidad:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 Cuentas",
             btn_15: "15 Cuentas",
             btn_25: "25 Cuentas",
@@ -1067,7 +1067,7 @@ const translations = {
             error_desc: "लिंक समाप्त हो गया हो सकता है। कृपया पुनः प्रयास करें।",
         },
         bulk: {
-            title: "🗃️ *बल्क खाते पैकेज*\n────────────\nआपको जितने Alight Motion Pro खातों की आवश्यकता है, उन्हें चुनें:\n\n› परिणाम प्रारूप : दस्तावेज़ फ़ाइल (.txt)\n› खाते की अवधि   : 1 वर्ष प्रति खाता\n› सत्र सीमा      : 1000 खातों तक\n\nनीचे दिए गए पैकेज में से चुनें या अपनी संख्या लिखें:",
+            title: "📦 *BULK ACCOUNTS PACKAGE*\n━━━━━━━━━━━━━━\n\n🎬 Alight Motion Pro — 1 Year\n\n📄 Format: \".txt\" Document\n⏳ Duration: 1 Year per Account\n🔢 Limit: Up to 1,000 Accounts per Session\n\n👇 Choose your preferred package below or enter a custom quantity to continue.\n\n✨ Thank you!",
             btn_5: "5 खाते",
             btn_15: "15 खाते",
             btn_25: "25 खाते",
