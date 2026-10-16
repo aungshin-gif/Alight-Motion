@@ -92,7 +92,7 @@ const translations = {
             error_desc: "Silakan coba beberapa saat lagi.",
         },
         custom_email: {
-            title: "🔮 *UPGRADE EMAIL*\n────────────\nAktifkan status Pro 1 Tahun langsung di email pribadi Anda.\nAman tanpa perlu mengirim kata sandi.\n\nSilakan ketik alamat email Anda di chat ini:\n_(Contoh: namaanda@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Format email tidak valid. Pastikan menyertakan @ dan domain yang benar (contoh: namaanda@gmail.com):",
             sending_link: (email) => `🌀 *MENGAKTIFKAN LISENSI*\n────────────\nEmail Tujuan : \`${email}\`\nKeterangan   : Mengirimkan link aktivasi...\n────────────\nMohon tunggu beberapa detik...`,
             sent_title: "📩 *LINK AKTIVASI TELAH DIKIRIM!*",
@@ -229,7 +229,7 @@ const translations = {
             error_desc: "Please try again in a moment.",
         },
         custom_email: {
-            title: "🔮 *UPGRADE PERSONAL EMAIL*\n────────────\nActivate Pro 1 Year directly on your personal email.\nSafe without needing to send passwords.\n\nPlease type your email address in this chat:\n_(Example: yourname@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Invalid email format. Make sure to include @ and a valid domain (example: yourname@gmail.com):",
             sending_link: (email) => `🌀 *ACTIVATING LICENSE*\n────────────\nTarget Email : \`${email}\`\nStatus       : Sending activation link...\n────────────\nPlease wait a few seconds...`,
             sent_title: "📩 *ACTIVATION LINK SENT!*",
@@ -366,7 +366,7 @@ const translations = {
             error_desc: "Sila cuba sebentar lagi.",
         },
         custom_email: {
-            title: "🔮 *NAIK TARAF EMEL PERIBADI*\n────────────\nAktifkan status Pro 1 Tahun terus pada emel peribadi anda.\nSelamat tanpa perlu menghantar kata laluan.\n\nSila taipkan alamat emel anda di sini:\n_(Contoh: namaanda@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Format emel tidak sah. Pastikan menyertakan @ dan domain yang betul (contoh: namaanda@gmail.com):",
             sending_link: (email) => `🌀 *MENGAKTIFKAN LESEN*\n────────────\nEmel Sasaran : \`${email}\`\nStatus       : Menghantar pautan pengaktifan...\n────────────\nSila tunggu beberapa saat...`,
             sent_title: "📩 *PAUTAN PENGAKTIFAN TELAH DIHANTAR!*",
@@ -503,7 +503,7 @@ const translations = {
             error_desc: "Pakisubukang muli pagkalipas ng ilang sandali.",
         },
         custom_email: {
-            title: "🔮 *I-UPGRADE ANG SARILING EMAIL*\n────────────\nI-activate ang status na Pro 1 Taon direkta sa iyong personal na email.\nLigtas nang hindi kailangang magpadala ng password.\n\nI-type ang iyong email address dito:\n_(Halimbawa: pangalanmo@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Hindi wastong format ng email. Tiyaking may kasamang @ at tamang domain (halimbawa: pangalanmo@gmail.com):",
             sending_link: (email) => `🌀 *INA-ACTIVATE ANG LISENSYA*\n────────────\nTarget na Email : \`${email}\`\nStatus          : Ipinapadala ang activation link...\n────────────\nMaghintay ng ilang segundo...`,
             sent_title: "📩 *NAIPADALA NA ANG ACTIVATION LINK!*",
@@ -640,7 +640,7 @@ const translations = {
             error_desc: "يرجى المحاولة مرة أخرى بعد لحظات.",
         },
         custom_email: {
-            title: "🔮 *ترقية بريدك الشخصي*\n────────────\nفعل اشتراك سنة Pro مباشرة على بريدك الخاص.\nآمن تماماً دون الحاجة لمشاركة كلمة المرور.\n\nيرجى كتابة بريدك الإلكتروني هنا:\n_(مثال: yourname@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ صيغة البريد غير صحيحة. تأكد من كتابة @ والنطاق بشكل سليم (مثال: yourname@gmail.com):",
             sending_link: (email) => `🌀 *جاري تفعيل الاشتراك*\n────────────\nالبريد المستهدف : \`${email}\`\nالحالة           : جاري إرسال رابط التفعيل...\n────────────\nيرجى الانتظار بضع ثوانٍ...`,
             sent_title: "📩 *تم إرسال رابط التفعيل!*",
@@ -777,7 +777,7 @@ const translations = {
             error_desc: "Пожалуйста, попробуйте еще раз через минуту.",
         },
         custom_email: {
-            title: "🔮 *ОБНОВЛЕНИЕ ЛИЧНОЙ ПОЧТЫ*\n────────────\nАктивируйте статус Pro на 1 Год прямо на вашу личную почту.\nБезопасно, без передачи пароля.\n\nВведите ваш адрес электронной почты в этот чат:\n_(Пример: yourname@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Неверный формат почты. Убедитесь, что указали @ и правильный домен (пример: yourname@gmail.com):",
             sending_link: (email) => `🌀 *АКТИВАЦИЯ ЛИЦЕНЗИИ*\n────────────\nЦелевая Почта : \`${email}\`\nСтатус        : Отправка ссылки активации...\n────────────\nПожалуйста, подождите несколько секунд...`,
             sent_title: "📩 *ССЫЛКА АКТИВАЦИИ ОТПРАВЛЕНА!*",
@@ -914,7 +914,7 @@ const translations = {
             error_desc: "Por favor, inténtelo de nuevo en unos momentos.",
         },
         custom_email: {
-            title: "🔮 *MEJORAR CORREO PROPIO*\n────────────\nActive el estado Pro 1 Año directamente en su correo personal.\nSeguro, sin necesidad de enviar contraseñas.\n\nEscriba su dirección de correo en este chat:\n_(Ejemplo: sunombre@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ Formato de correo no válido. Asegúrese de incluir @ y un dominio correcto (ejemplo: sunombre@gmail.com):",
             sending_link: (email) => `🌀 *ACTIVANDO LICENCIA*\n────────────\nCorreo Destino : \`${email}\`\nEstado         : Enviando enlace de activación...\n────────────\nPor favor, espere unos segundos...`,
             sent_title: "📩 *¡ENLACE DE ACTIVACIÓN ENVIADO!*",
@@ -1051,7 +1051,7 @@ const translations = {
             error_desc: "कृपया कुछ समय बाद पुनः प्रयास करें।",
         },
         custom_email: {
-            title: "🔮 *व्यक्तिगत ईमेल अपग्रेड*\n────────────\nअपने व्यक्तिगत ईमेल पर सीधे 1 वर्ष Pro सक्रिय करें।\nपासवर्ड साझा किए बिना पूरी तरह सुरक्षित।\n\nकृपया अपना ईमेल पता यहां लिखें:\n_(उदाहरण: yourname@gmail.com)_",
+            title: "🔮 *PERSONAL EMAIL UPGRADE*\n────────────\n✨ Upgrade to Pro for 1 Year directly on your personal email.\n\n🔒 Safe & Secure — No password required.\n\n📩 Please enter your email address in this chat.\n\nExample: \"yourname@gmail.com\"",
             invalid_email: "⚠️ अमान्य ईमेल प्रारूप। कृपया @ और सही डोमेन शामिल करें (उदाहरण: yourname@gmail.com):",
             sending_link: (email) => `🌀 *लाइसेंस सक्रिय किया जा रहा है*\n────────────\nलक्षित ईमेल : \`${email}\`\nस्थिति     : सक्रियण लिंक भेजा जा रहा है...\n────────────\nकृपया कुछ सेकंड प्रतीक्षा करें...`,
             sent_title: "📩 *सक्रियण लिंक भेज दिया गया है!*",
