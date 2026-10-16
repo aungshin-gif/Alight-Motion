@@ -234,40 +234,66 @@ bot.use(async (ctx, next) => {
 });
 
 
-// Animasi transisi singkat saat berpindah menu (1 frame, hanya pada edit pertama)
+// Animasi transisi antar menu: progress bar 3 frame bertema ikon tujuan, lalu layar asli.
+// Berlaku untuk edit pertama pada tombol navigasi; jika gagal, otomatis kembali ke perilaku biasa.
+const TRANSITION_ICONS = { menu_single: '⚡', menu_bulk: '🌊', menu_custom_email: '🔮', menu_language: '🌐', menu_main: '✨' };
+const TRANSITION_FRAMES = ['▰▱▱▱▱', '▰▰▰▱▱', '▰▰▰▰▰'];
+const TRANSITION_DELAY_MS = 220;
+
 bot.use(async (ctx, next) => {
-    const data = ctx.callbackQuery?.data;
-    if (data && /^menu_(single|custom_email|bulk|language)$/.test(data) && !ctx.callbackQuery.message?.photo) {
-        const original = ctx.editMessageText.bind(ctx);
-        let animated = false;
-        ctx.editMessageText = async (text, extra) => {
-            if (animated) return original(text, extra);
-            animated = true;
-            let framed = false;
+    const q = ctx.callbackQuery;
+    const msg = q?.message;
+    if (!msg) return next();
+
+    const data = q.data || '';
+    const icon = TRANSITION_ICONS[data] || (/^set_lang_/.test(data) ? '🌐' : null);
+    const fromPhoto = !!msg.photo;
+
+    // Memutar animasi pada pesan tombol yang ditekan (atau pesan baru jika asalnya foto). Mengembalikan message_id bingkai.
+    let played = false;
+    let frameId = null;
+    ctx.runTransition = async () => {
+        if (played) return frameId;
+        played = true;
+        if (!icon) return null;
+        try {
+            const chatId = ctx.chat.id;
+            if (fromPhoto) {
+                await ctx.deleteMessage().catch(() => { });
+                const sent = await ctx.reply(`${icon} ${TRANSITION_FRAMES[0]}`);
+                frameId = sent.message_id;
+            } else {
+                await ctx.telegram.editMessageText(chatId, msg.message_id, undefined, `${icon} ${TRANSITION_FRAMES[0]}`);
+                frameId = msg.message_id;
+            }
+            for (let i = 1; i < TRANSITION_FRAMES.length; i++) {
+                await new Promise(r => setTimeout(r, TRANSITION_DELAY_MS));
+                await ctx.telegram.editMessageText(chatId, frameId, undefined, `${icon} ${TRANSITION_FRAMES[i]}`).catch(() => { });
+            }
+            await new Promise(r => setTimeout(r, TRANSITION_DELAY_MS));
+        } catch {
+            frameId = fromPhoto ? frameId : null;
+        }
+        return frameId;
+    };
+
+    const original = ctx.editMessageText.bind(ctx);
+    ctx.editMessageText = async (text, extra) => {
+        const id = await ctx.runTransition();
+        if (id) {
             try {
-                await original('⏳ _Loading..._', { parse_mode: 'Markdown' });
-                framed = true;
-                await new Promise(r => setTimeout(r, 250));
-            } catch { }
-            try {
-                return await original(text, extra);
+                return await ctx.telegram.editMessageText(ctx.chat.id, id, undefined, text, extra);
             } catch (err) {
-                if (framed) await ctx.deleteMessage().catch(() => { });
+                await ctx.telegram.deleteMessage(ctx.chat.id, id).catch(() => { });
                 throw err;
             }
-        };
-    }
-    return next();
-});
-
-// Pesan foto tidak bisa diedit sebagai teks: hapus lalu kirim ulang agar menu lain tetap berfungsi
-bot.use(async (ctx, next) => {
-    if (ctx.callbackQuery?.message?.photo) {
-        ctx.editMessageText = async (text, extra) => {
+        }
+        if (fromPhoto) {
             await ctx.deleteMessage().catch(() => { });
             return ctx.reply(text, extra);
-        };
-    }
+        }
+        return original(text, extra);
+    };
     return next();
 });
 
@@ -792,7 +818,12 @@ const HEART_EFFECT_ID = '5159385139981059251';
 
 async function sendWelcomeMenu(ctx, text, kb, withHeart = false) {
     if (ctx.callbackQuery?.message) {
-        await ctx.deleteMessage().catch(() => { });
+        const frameId = ctx.runTransition ? await ctx.runTransition() : null;
+        if (frameId) {
+            await ctx.telegram.deleteMessage(ctx.chat.id, frameId).catch(() => { });
+        } else {
+            await ctx.deleteMessage().catch(() => { });
+        }
     }
     try {
         const photo = welcomePhotoFileId || { source: WELCOME_PHOTO_PATH };
