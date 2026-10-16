@@ -234,6 +234,32 @@ bot.use(async (ctx, next) => {
 });
 
 
+// Animasi transisi singkat saat berpindah menu (1 frame, hanya pada edit pertama)
+bot.use(async (ctx, next) => {
+    const data = ctx.callbackQuery?.data;
+    if (data && /^menu_(single|custom_email|bulk|language)$/.test(data) && !ctx.callbackQuery.message?.photo) {
+        const original = ctx.editMessageText.bind(ctx);
+        let animated = false;
+        ctx.editMessageText = async (text, extra) => {
+            if (animated) return original(text, extra);
+            animated = true;
+            let framed = false;
+            try {
+                await original('⏳ _Loading..._', { parse_mode: 'Markdown' });
+                framed = true;
+                await new Promise(r => setTimeout(r, 250));
+            } catch { }
+            try {
+                return await original(text, extra);
+            } catch (err) {
+                if (framed) await ctx.deleteMessage().catch(() => { });
+                throw err;
+            }
+        };
+    }
+    return next();
+});
+
 // Pesan foto tidak bisa diedit sebagai teks: hapus lalu kirim ulang agar menu lain tetap berfungsi
 bot.use(async (ctx, next) => {
     if (ctx.callbackQuery?.message?.photo) {
@@ -2216,9 +2242,9 @@ bot.action('menu_bulk', async (ctx) => {
     const text = i18n.t(lang, 'bulk.title');
 
     const bulkKeyboard = Markup.inlineKeyboard([
-        [Markup.button.callback(i18n.t(lang, 'bulk.btn_5'), 'bulk_run_5'), Markup.button.callback(i18n.t(lang, 'bulk.btn_15'), 'bulk_run_15')],
-        [Markup.button.callback(i18n.t(lang, 'bulk.btn_25'), 'bulk_run_25'), Markup.button.callback(i18n.t(lang, 'bulk.btn_50'), 'bulk_run_50')],
-        [Markup.button.callback(i18n.t(lang, 'bulk.btn_100'), 'bulk_run_100'), Markup.button.callback(i18n.t(lang, 'bulk.btn_custom'), 'bulk_custom_ask')],
+        [styledBtn(i18n.t(lang, 'bulk.btn_5'), 'bulk_run_5', 'success'), styledBtn(i18n.t(lang, 'bulk.btn_15'), 'bulk_run_15', 'success')],
+        [styledBtn(i18n.t(lang, 'bulk.btn_25'), 'bulk_run_25', 'success'), styledBtn(i18n.t(lang, 'bulk.btn_50'), 'bulk_run_50', 'success')],
+        [styledBtn(i18n.t(lang, 'bulk.btn_100'), 'bulk_run_100', 'success'), Markup.button.callback(i18n.t(lang, 'bulk.btn_custom'), 'bulk_custom_ask')],
         [styledBtn(i18n.t(lang, 'menu.btn_back'), 'menu_main', 'primary')]
     ]);
 
