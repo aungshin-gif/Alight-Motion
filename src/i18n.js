@@ -50,7 +50,7 @@ const translations = {
     id: {
         meta: {"name":"Indonesia","flag":"🇮🇩","langTag":"INDONESIA"},
         menu: {
-            title: (name = 'Kawan') => `✦ *ALIGHT MOTION PRO*\n────────────\nHalo, ${name}! 👋\nSilakan pilih opsi aktivasi akun di bawah:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Akun Instan",
             btn_custom: "🔮 Upgrade Email",
             btn_bulk: "🗃️ Paket Masal",
@@ -187,7 +187,7 @@ const translations = {
     en: {
         meta: {"name":"English","flag":"🇬🇧","langTag":"ENGLISH"},
         menu: {
-            title: (name = 'Friend') => `✦ *ALIGHT MOTION PRO*\n────────────\nHello, ${name}! 👋\nPlease select an account activation option below:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Instant Account",
             btn_custom: "🔮 Upgrade Email",
             btn_bulk: "🗃️ Bulk Accounts",
@@ -324,7 +324,7 @@ const translations = {
     ms: {
         meta: {"name":"Bahasa Melayu","flag":"🇲🇾","langTag":"MELAYU"},
         menu: {
-            title: (name = 'Kawan') => `✦ *ALIGHT MOTION PRO*\n────────────\nSalam, ${name}! 👋\nSila pilih pilihan pengaktifan akaun di bawah:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Akaun Segera",
             btn_custom: "🔮 Naik Taraf Emel",
             btn_bulk: "🗃️ Pakej Pukal",
@@ -461,7 +461,7 @@ const translations = {
     fil: {
         meta: {"name":"Filipino","flag":"🇵🇭","langTag":"FILIPINO"},
         menu: {
-            title: (name = 'Kaibigan') => `✦ *ALIGHT MOTION PRO*\n────────────\nKamusta, ${name}! 👋\nPumili ng opsyon sa pag-activate ng account sa ibaba:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Instant Account",
             btn_custom: "🔮 I-upgrade ang Email",
             btn_bulk: "🗃️ Bulk Accounts",
@@ -598,7 +598,7 @@ const translations = {
     ar: {
         meta: {"name":"العربية","flag":"🇸🇦","langTag":"ARABIC"},
         menu: {
-            title: (name = 'صديقنا') => `✦ *ALIGHT MOTION PRO*\n────────────\nأهلاً بك، ${name}! 👋\nيرجى اختيار خدمة تفعيل الحساب أدناه:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ حساب فوري",
             btn_custom: "🔮 ترقية البريد",
             btn_bulk: "🗃️ باقة جماعية",
@@ -735,7 +735,7 @@ const translations = {
     ru: {
         meta: {"name":"Русский","flag":"🇷🇺","langTag":"RUSSIAN"},
         menu: {
-            title: (name = 'Друг') => `✦ *ALIGHT MOTION PRO*\n────────────\nПривет, ${name}! 👋\nВыберите вариант активации аккаунта ниже:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Мгновенный Аккаунт",
             btn_custom: "🔮 Обновить Почту",
             btn_bulk: "🗃️ Массовые Аккаунты",
@@ -872,7 +872,7 @@ const translations = {
     es: {
         meta: {"name":"Español","flag":"🇪🇸","langTag":"SPANISH"},
         menu: {
-            title: (name = 'Amigo') => `✦ *ALIGHT MOTION PRO*\n────────────\n¡Hola, ${name}! 👋\nElija una opción de activación de cuenta abajo:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ Cuenta Instantánea",
             btn_custom: "🔮 Mejorar Correo",
             btn_bulk: "🗃️ Cuentas Masivas",
@@ -1009,7 +1009,7 @@ const translations = {
     hi: {
         meta: {"name":"हिन्दी","flag":"🇮🇳","langTag":"HINDI"},
         menu: {
-            title: (name = 'मित्र') => `✦ *ALIGHT MOTION PRO*\n────────────\nनमस्ते, ${name}! 👋\nकृपया नीचे से खाता सक्रियण विकल्प चुनें:`,
+            title: (name) => `Welcome to Alight Motion activation.\nU can create Alight Motion 1 year Pro.`,
             btn_single: "🎟️ त्वरित खाता",
             btn_custom: "🔮 ईमेल अपग्रेड",
             btn_bulk: "🗃️ बल्क खाते",

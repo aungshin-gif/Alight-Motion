@@ -714,6 +714,11 @@ function getJoinChannelKeyboard(lang = 'id') {
     ]);
 }
 
+// Warna tombol Telegram (Bot API: style = 'primary' biru | 'success' hijau)
+function styledBtn(text, data, style) {
+    return { ...Markup.button.callback(text, data), style };
+}
+
 // -------------------------------------------------------------
 // Keyboard Menu Utama (Publik - Grid 2x2 Kompak & Rapi)
 // -------------------------------------------------------------
@@ -721,12 +726,12 @@ function getMainKeyboard(userId, ctxFrom = null) {
     const lang = getUserLang(userId, ctxFrom);
     return Markup.inlineKeyboard([
         [
-            Markup.button.callback(i18n.t(lang, 'menu.btn_single'), 'menu_single'),
-            Markup.button.callback(i18n.t(lang, 'menu.btn_custom'), 'menu_custom_email')
+            styledBtn(i18n.t(lang, 'menu.btn_single'), 'menu_single', 'primary'),
+            styledBtn(i18n.t(lang, 'menu.btn_custom'), 'menu_custom_email', 'success')
         ],
         [
-            Markup.button.callback(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk'),
-            Markup.button.callback(i18n.t(lang, 'menu.btn_language'), 'menu_language')
+            styledBtn(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk', 'success'),
+            styledBtn(i18n.t(lang, 'menu.btn_language'), 'menu_language', 'primary')
         ]
     ]);
 }
@@ -763,7 +768,7 @@ function getLanguageKeyboard(userId, ctxFrom = null) {
         }
         rows.push(row);
     }
-    rows.push([Markup.button.callback(i18n.t(currentLang, 'menu.btn_back'), 'menu_main')]);
+    rows.push([styledBtn(i18n.t(currentLang, 'menu.btn_back'), 'menu_main', 'primary')]);
     return Markup.inlineKeyboard(rows);
 }
 
@@ -2187,7 +2192,7 @@ bot.action('menu_bulk', async (ctx) => {
         [Markup.button.callback(i18n.t(lang, 'bulk.btn_5'), 'bulk_run_5'), Markup.button.callback(i18n.t(lang, 'bulk.btn_15'), 'bulk_run_15')],
         [Markup.button.callback(i18n.t(lang, 'bulk.btn_25'), 'bulk_run_25'), Markup.button.callback(i18n.t(lang, 'bulk.btn_50'), 'bulk_run_50')],
         [Markup.button.callback(i18n.t(lang, 'bulk.btn_100'), 'bulk_run_100'), Markup.button.callback(i18n.t(lang, 'bulk.btn_custom'), 'bulk_custom_ask')],
-        [Markup.button.callback(i18n.t(lang, 'menu.btn_back'), 'menu_main')]
+        [styledBtn(i18n.t(lang, 'menu.btn_back'), 'menu_main', 'primary')]
     ]);
 
     try {
@@ -2447,7 +2452,7 @@ bot.action(/cancel_queue_(.+)/, async (ctx) => {
         `Pesanan belum diproses dan saldo/kuota Anda tetap aman.`;
 
     const cancelKb = Markup.inlineKeyboard([
-        [Markup.button.callback(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk')],
+        [styledBtn(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk', 'success')],
         [Markup.button.callback(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main')]
     ]);
 
@@ -3260,7 +3265,7 @@ bot.action('menu_custom_email', async (ctx) => {
     const text = i18n.t(lang, 'custom_email.title');
 
     const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback(i18n.t(lang, 'menu.btn_back'), 'menu_main')]
+        [styledBtn(i18n.t(lang, 'menu.btn_back'), 'menu_main', 'primary')]
     ]);
 
     try {
