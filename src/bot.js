@@ -761,13 +761,26 @@ const WELCOME_PHOTO_PATH = path.join(__dirname, '..', 'assets', 'welcome.jpg');
 let welcomePhotoFileId = null;
 
 // Kirim Menu Utama beserta foto sambutan (fallback ke teks biasa jika foto gagal)
-async function sendWelcomeMenu(ctx, text, kb) {
+// Efek animasi pesan Telegram (hanya chat pribadi): ❤️
+const HEART_EFFECT_ID = '5159385139981059251';
+
+async function sendWelcomeMenu(ctx, text, kb, withHeart = false) {
     if (ctx.callbackQuery?.message) {
         await ctx.deleteMessage().catch(() => { });
     }
     try {
         const photo = welcomePhotoFileId || { source: WELCOME_PHOTO_PATH };
-        const sent = await ctx.replyWithPhoto(photo, { caption: text, parse_mode: 'Markdown', ...kb });
+        const extra = { caption: text, parse_mode: 'Markdown', ...kb };
+        let sent;
+        if (withHeart) {
+            try {
+                sent = await ctx.replyWithPhoto(photo, { ...extra, message_effect_id: HEART_EFFECT_ID });
+            } catch {
+                sent = await ctx.replyWithPhoto(photo, extra);
+            }
+        } else {
+            sent = await ctx.replyWithPhoto(photo, extra);
+        }
         if (!welcomePhotoFileId && sent?.photo?.length) {
             welcomePhotoFileId = sent.photo[sent.photo.length - 1].file_id;
         }
@@ -823,7 +836,7 @@ bot.start(async (ctx) => {
         return ctx.reply(text, { parse_mode: 'Markdown', ...keyboard });
     }
 
-    await sendWelcomeMenu(ctx, getMainMenuWelcomeText(userId, ctx.from), getMainKeyboard(userId, ctx.from));
+    await sendWelcomeMenu(ctx, getMainMenuWelcomeText(userId, ctx.from), getMainKeyboard(userId, ctx.from), true);
 });
 
 bot.command('cancel', async (ctx) => {
