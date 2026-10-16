@@ -1,0 +1,117 @@
+====================================================================
+📖 SETUP & INSTALLATION GUIDE - AM AUTO REGIST TELEGRAM BOT
+====================================================================
+
+Thank you for purchasing the AM Auto Regist Telegram Bot!
+This application is fully plug-and-play and ready to deploy on:
+1. Pterodactyl Panel (Recommended: 24/7 uptime, auto-restart)
+2. Linux VPS (Ubuntu / Debian with PM2)
+3. Local PC / Laptop (Windows / macOS / Linux)
+
+--------------------------------------------------------------------
+PREREQUISITES
+--------------------------------------------------------------------
+- Node.js 20 LTS or Node.js 22 LTS (Download: https://nodejs.org)
+- A Telegram account
+
+--------------------------------------------------------------------
+STEP 1: GET YOUR TELEGRAM BOT TOKEN
+--------------------------------------------------------------------
+1. Open Telegram and search for: @BotFather
+2. Send command: /newbot
+3. Enter a display name for your bot (e.g. Alight Motion Bot).
+4. Enter a unique username ending with 'bot' (e.g. alightmaker_bot).
+5. Copy and save the "HTTP API Token" provided by BotFather.
+
+--------------------------------------------------------------------
+STEP 2: GET YOUR OWNER TELEGRAM USER ID
+--------------------------------------------------------------------
+1. In Telegram, search for: @userinfobot (or @getmyid_bot).
+2. Press Start (/start).
+3. Copy the numeric "Id" (e.g. 1234567890).
+   This ID will grant you full Owner access to the secret control panel.
+
+--------------------------------------------------------------------
+STEP 3: CONFIGURE THE ENVIRONMENT FILE (.env)
+--------------------------------------------------------------------
+Open the `.env` file in the root directory and fill in your details:
+
+BOT_TOKEN=your_token_from_botfather_here
+OWNER_ID=your_numeric_telegram_id_here
+ADMIN_ID=
+CHANNEL_ID=
+PORT=3000
+API_BASE_URL=http://localhost:3000
+
+Notes:
+- BOT_TOKEN and OWNER_ID are REQUIRED.
+- ADMIN_ID is optional (comma-separated for multiple staff admins).
+- CHANNEL_ID is optional. If you want users to join your Telegram channel before claiming accounts, enter your channel username (e.g. @yourchannel) or leave it blank to allow everyone access.
+
+--------------------------------------------------------------------
+STEP 4A: DEPLOY ON PTERODACTYL PANEL (Easiest & Recommended)
+--------------------------------------------------------------------
+1. Log in to your Pterodactyl Panel.
+2. Go to the [Startup] tab:
+   - Set DOCKER IMAGE to: Node.js 20 (or Node.js 22).
+   - Ensure MAIN FILE / CMD RUN is set to: index.js
+3. Go to the [Files] tab:
+   - Upload this zip archive.
+   - Click the three dots (...) next to the zip file and choose "Unarchive" (Extract).
+   - Open the `.env` file, enter your BOT_TOKEN and OWNER_ID, then click "Save Content".
+4. Go to the [Console] tab:
+   - Click the green "Start" button.
+   - The panel will automatically run `npm install` and boot your bot!
+   - Your bot is now active 24/7!
+
+--------------------------------------------------------------------
+STEP 4B: DEPLOY ON LINUX VPS (Ubuntu / Debian)
+--------------------------------------------------------------------
+1. Connect to your VPS via SSH:
+   ssh root@your_vps_ip
+
+2. Install Node.js 20 LTS (if not already installed):
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+
+3. Navigate to your bot directory and install dependencies:
+   cd /path/to/bot
+   npm install
+
+4. Start the bot with PM2 for background 24/7 uptime:
+   sudo npm install -g pm2
+   pm2 start index.js --name am-bot
+   pm2 save
+   pm2 startup
+
+--------------------------------------------------------------------
+STEP 4C: RUN LOCALLY (Windows / macOS / Linux)
+--------------------------------------------------------------------
+1. Open Terminal or Command Prompt in the bot folder.
+2. Install dependencies:
+   npm install
+3. Start the application:
+   npm start
+
+--------------------------------------------------------------------
+STEP 5: BOT COMMANDS & SECRET OWNER MENU
+--------------------------------------------------------------------
+1. Start the bot on Telegram: send /start
+2. Open Secret Owner Panel (Only available to OWNER_ID):
+   Send: /owner or /admin
+
+   Owner Features:
+   - 🔢 Change Invoice Order Number: /setnota <number>
+   - 🛑 Toggle Customer Queue: /startqueue and /stopqueue
+   - 📢 Send Broadcast to all users: /broadcast <message>
+   - 📌 Pin Broadcast message: /broadcastpin <message>
+   - 📬 Check Customer Email OTP: /cekinbox <email>
+   - ⚙️ Force Channel Subscription: /forcesub
+   - 📢 Change Channel: /setchannel <@channel>
+   - 💾 Download Database Backup: /backup
+   - 👥 Total Registered Users: /users
+   - 🧹 Clear Temporary Cache: /clearsession
+
+====================================================================
+Enjoy your Alight Motion Auto Regist Bot!
+====================================================================

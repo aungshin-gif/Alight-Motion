@@ -1,0 +1,87 @@
+====================================================================
+📖 PANDUAN LENGKAP PEMASANGAN - AM AUTO REGIST TELEGRAM BOT
+====================================================================
+
+Terima kasih telah membeli source code AM Auto Regist Bot!
+Bot ini sudah siap pakai (Plug and Play) untuk dijalankan di:
+1. Panel Pterodactyl (Sangat Disarankan, Praktis & 24 Jam)
+2. VPS Ubuntu / Debian (Bisa pakai PM2)
+3. Komputer / Laptop Lokal (Windows / Mac / Linux)
+
+--------------------------------------------------------------------
+TAHAP 1: PERSIAPAN TOKEN & ID TELEGRAM
+--------------------------------------------------------------------
+1. Dapatkan Token Bot:
+   - Buka aplikasi Telegram, cari bot: @BotFather
+   - Kirim pesan: /newbot
+   - Masukkan nama bot Anda (contoh: Alight Motion Bot).
+   - Masukkan username bot berakhiran 'bot' (contoh: alightmaker_bot).
+   - Simpan "HTTP API Token" yang diberikan oleh BotFather.
+
+2. Dapatkan ID Telegram Anda (Untuk Akses Menu Owner):
+   - Di Telegram, cari bot: @userinfobot (atau @getmyid_bot).
+   - Kirim /start.
+   - Catat deretan angka "Id" Anda (contoh: 1234567890).
+
+--------------------------------------------------------------------
+TAHAP 2: PENGATURAN FILE KONFIGURASI (.env)
+--------------------------------------------------------------------
+Buka file bernama `.env` (atau jika belum ada, copy dari `.env.example`).
+Isikan data berikut:
+
+BOT_TOKEN=masukkan_token_dari_botfather_disini
+OWNER_ID=masukkan_id_telegram_anda_disini
+ADMIN_ID=
+CHANNEL_ID=
+PORT=3000
+API_BASE_URL=http://localhost:3000
+
+Catatan:
+- BOT_TOKEN & OWNER_ID WAJIB diisi.
+- CHANNEL_ID opsional. Jika ingin bot mewajibkan user bergabung ke channel Telegram Anda sebelum membuat akun, isi dengan username channel (contoh: @channelanda). Jika tidak ingin, kosongkan saja.
+
+--------------------------------------------------------------------
+TAHAP 3A: CARA JALANKAN DI PANEL PTERODACTYL (Paling Mudah)
+--------------------------------------------------------------------
+1. Masuk ke halaman Panel Pterodactyl server Anda.
+2. Di tab [Startup]:
+   - Pada pilihan DOCKER IMAGE, pilih: Node.js 20 (atau Node.js 22).
+   - Pastikan MAIN FILE / CMD RUN bernilai: index.js
+3. Di tab [Files]:
+   - Upload file zip bot ini.
+   - Klik titik tiga (...) pada file zip, lalu pilih "Unarchive" (Extract).
+   - Buka file `.env`, lalu masukkan BOT_TOKEN dan OWNER_ID Anda, kemudian klik "Save Content".
+4. Di tab [Console]:
+   - Klik tombol hijau "Start".
+   - Panel otomatis mengunduh modul dan menyalakan bot.
+   - Bot langsung aktif 24 jam!
+
+--------------------------------------------------------------------
+TAHAP 3B: CARA JALANKAN DI VPS / LAPTOP LOKAL
+--------------------------------------------------------------------
+1. Pastikan sudah terinstall Node.js versi 20 atau lebih baru (https://nodejs.org).
+2. Buka Terminal / CMD di dalam folder bot ini.
+3. Install modul yang dibutuhkan:
+   npm install
+4. Jalankan bot:
+   npm start
+   (Atau jika di VPS menggunakan PM2 agar jalan 24 jam):
+   pm2 start index.js --name am-bot
+
+--------------------------------------------------------------------
+TAHAP 4: MENGGUNAKAN FITUR BOT
+--------------------------------------------------------------------
+1. Buka Telegram, cari username bot Anda, lalu kirim: /start
+2. Untuk membuka Menu Rahasia Owner (khusus ID Owner):
+   Kirim perintah: /owner atau /admin
+   Fitur Owner meliputi:
+   - 🔢 Ganti Nomor Nota (/setnota <angka>)
+   - 🛑 Buka/Tutup Antrean (/startqueue & /stopqueue)
+   - 📢 Kirim Pesan Siaran Massal (/broadcast)
+   - 📬 Cek OTP Pembeli (/cekinbox <email>)
+   - ⚙️ Kelola Wajib Join Channel (/forcesub)
+   - 💾 Unduh Backup Database (/backup)
+   - 👥 Data Total Pelanggan (/users)
+
+Selamat menggunakan bot Alight Motion Auto Regist!
+====================================================================

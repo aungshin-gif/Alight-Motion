@@ -1,0 +1,26 @@
+{
+  "name": "am-auto-regist-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot Auto Registrasi & Aktivasi Akun Alight Motion Pro",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "bot": "node src/bot.js",
+    "server": "node src/server.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "telegram-bot",
+    "telegraf",
+    "auto-regist",
+    "alight-motion"
+  ],
+  "author": "Developer",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "telegraf": "^4.16.3"
+  }
+}
