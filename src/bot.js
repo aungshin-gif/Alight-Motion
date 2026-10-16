@@ -2075,13 +2075,14 @@ bot.action('menu_single', async (ctx) => {
         const loginLink = (freshRes && freshRes.success && freshRes.loginLink) ? freshRes.loginLink : api.buildAlightLoginLink(oob);
 
         const successText = `${i18n.t(lang, 'single.success_title')}\n` +
-            `────────────\n` +
-            `${i18n.t(lang, 'single.section_data')}\n\n` +
-            `› ${i18n.t(lang, 'single.label_email')}  : \`${email}\`\n` +
-            `› ${i18n.t(lang, 'single.label_duration')} : ${i18n.t(lang, 'single.val_duration')}\n` +
-            `› ${i18n.t(lang, 'single.label_status')} : ${i18n.t(lang, 'single.val_status')}\n\n` +
-            `${i18n.t(lang, 'single.section_how_login')}\n` +
-            `${i18n.t(lang, 'single.how_login_steps')}`;
+            `━━━━━━━━━━━━━━\n\n` +
+            `${i18n.t(lang, 'single.label_email')}: \`${email}\`\n\n` +
+            `${i18n.t(lang, 'single.label_duration')}: ${i18n.t(lang, 'single.val_duration')}\n\n` +
+            `${i18n.t(lang, 'single.label_status')}: ${i18n.t(lang, 'single.val_status')}\n\n` +
+            `${i18n.t(lang, 'single.section_how_login')}\n\n` +
+            `${i18n.t(lang, 'single.how_login_steps')}\n\n` +
+            `━━━━━━━━━━━━━━\n` +
+            `✨ Thank you for choosing us!`;
 
         const keyboard = Markup.inlineKeyboard([
             [Markup.button.url(i18n.t(lang, 'single.btn_login'), loginLink)],
