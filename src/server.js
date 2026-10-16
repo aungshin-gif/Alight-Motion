@@ -400,6 +400,9 @@ app.post('/api/verify-link', async (req, res) => {
     }
 });
 
+// Health check (untuk UptimeRobot / Render agar service tidak tidur)
+app.get('/', (req, res) => res.status(200).send('OK'));
+
 // Jalankan Server Mandiri
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`📡 AM AUTO REGIST API Server aktif di port ${PORT}`);
