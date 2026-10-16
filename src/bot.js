@@ -1321,7 +1321,7 @@ bot.command('setchannel', async (ctx) => {
     }
     const parts = ctx.message.text.trim().split(/\s+/);
     if (parts.length < 2) {
-        return ctx.reply('⚠️ Invalid format. Use: `/setchannel <@channelname>`\nContoh: `/setchannel @canvalive`', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Use: `/setchannel <@channelname>`\nExample: `/setchannel @canvalive`', { parse_mode: 'Markdown' });
     }
     let ch = parts[1].trim();
     if (!ch.startsWith('@') && !ch.startsWith('-100')) {
