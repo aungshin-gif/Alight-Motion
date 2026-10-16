@@ -949,37 +949,37 @@ function getOwnerDashboardText(userId = null) {
     const activeCount = typeof activeBulkJobs !== 'undefined' ? activeBulkJobs.size : (activeBulkJob ? 1 : 0);
     const totalQueue = bulkQueue.length + activeCount;
     const queueStatus = isQueueOpen
-        ? (totalQueue > 0 ? `${totalQueue} Antrean (${activeCount} Slot Aktif) ⏳` : 'Kosong (Siap Terima Order)')
-        : '🛑 DITUTUP (Maintenance)';
+        ? (totalQueue > 0 ? `${totalQueue} Queued (${activeCount} Active Slots) ⏳` : 'Empty (Ready for Orders)')
+        : '🛑 CLOSED (Maintenance)';
     const channelStatus = CHANNEL_ID 
-        ? (forceSubEnabled ? `${CHANNEL_ID} (Aktif) 📢` : `${CHANNEL_ID} (Nonaktif) ⚪`) 
-        : 'Belum diatur (Bebas Masuk) ⚪';
-    const titleRole = (userId && !isOwner(userId)) ? '🛡️ *PANEL KONTROL ADMIN*' : '👑 *PANEL KONTROL OWNER*';
-    const sapaan = (userId && !isOwner(userId)) ? 'Halo admin, berikut rangkuman data toko Alight Motion:' : 'Halo tuan, berikut rangkuman data toko Alight Motion Anda:';
+        ? (forceSubEnabled ? `${CHANNEL_ID} (Active) 📢` : `${CHANNEL_ID} (Inactive) ⚪`) 
+        : 'Not set (Open Access) ⚪';
+    const titleRole = (userId && !isOwner(userId)) ? '🛡️ *ADMIN CONTROL PANEL*' : '👑 *OWNER CONTROL PANEL*';
+    const sapaan = (userId && !isOwner(userId)) ? 'Hello admin, here is the Alight Motion store summary:' : 'Hello boss, here is your Alight Motion store summary:';
 
     return `${titleRole}\n` +
         `────────────\n` +
         `${sapaan}\n\n` +
-        `📋 *INFORMASI TRANSAKSI:*\n` +
-        `• Nomor Pesanan Terakhir   : \`AM-ACT-${lastCounter}\`\n` +
-        `• Nomor Pesanan Berikutnya : \`AM-ACT-${nextCounter}\`\n` +
-        `• Total Pelanggan Bot   : *${totalUsers}* Pengguna\n\n` +
-        `⚡ *KONDISI BOT SAAT INI:*\n` +
-        `• Status Bot            : ${isMaintenance ? '🛠️ Pemeliharaan (Offline) ⛔' : 'Aktif Normal ✅'}\n` +
-        `• Antrean Pembeli       : ${queueStatus}\n` +
-        `• Syarat Channel        : ${channelStatus}\n` +
+        `📋 *TRANSACTION INFO:*\n` +
+        `• Last Order Number   : \`AM-ACT-${lastCounter}\`\n` +
+        `• Next Order Number   : \`AM-ACT-${nextCounter}\`\n` +
+        `• Total Bot Users   : *${totalUsers}* Users\n\n` +
+        `⚡ *CURRENT BOT STATUS:*\n` +
+        `• Bot Status           : ${isMaintenance ? '🛠️ Maintenance (Offline) ⛔' : 'Running Normally ✅'}\n` +
+        `• Buyer Queue          : ${queueStatus}\n` +
+        `• Channel Requirement : ${channelStatus}\n` +
         `────────────\n` +
-        `💡 Silakan pilih kategori menu kontrol di bawah:`;
+        `💡 Please choose a control category below:`;
 }
 
 function getOwnerDashboardKeyboard() {
     return Markup.inlineKeyboard([
-        [Markup.button.callback('📊 1. Kelola Transaksi & Antrean', 'owner_cat_transaksi')],
-        [Markup.button.callback('📢 2. Pemasaran & Channel', 'owner_cat_pemasaran')],
-        [Markup.button.callback('🛠️ 3. Pemeliharaan & Bantuan', 'owner_cat_sistem')],
+        [Markup.button.callback('📊 1. Manage Transactions & Queue', 'owner_cat_transaksi')],
+        [Markup.button.callback('📢 2. Marketing & Channel', 'owner_cat_pemasaran')],
+        [Markup.button.callback('🛠️ 3. Maintenance & Help', 'owner_cat_sistem')],
         [
-            Markup.button.callback('🔄 Segarkan Data', 'owner_refresh_dash'),
-            Markup.button.callback('« Menu Utama', 'menu_main')
+            Markup.button.callback('🔄 Refresh Data', 'owner_refresh_dash'),
+            Markup.button.callback('« Main Menu', 'menu_main')
         ]
     ]);
 }
@@ -993,27 +993,27 @@ function getOwnerCatTransaksiText() {
     const activeCount = typeof activeBulkJobs !== 'undefined' ? activeBulkJobs.size : (activeBulkJob ? 1 : 0);
     const totalQueue = bulkQueue.length + activeCount;
     const queueStatus = isQueueOpen
-        ? (totalQueue > 0 ? `${totalQueue} Antrean (${activeCount} Slot Aktif) ⏳` : 'Buka (Siap Terima Order) ✅')
-        : '🛑 DITUTUP (Maintenance)';
+        ? (totalQueue > 0 ? `${totalQueue} Queued (${activeCount} Active Slots) ⏳` : 'Open (Ready for Orders) ✅')
+        : '🛑 CLOSED (Maintenance)';
 
-    return `📊 *KELOLA TRANSAKSI & ANTREAN*\n` +
+    return `📊 *MANAGE TRANSACTIONS & QUEUE*\n` +
         `────────────\n` +
-        `Rangkuman kondisi transaksi dan antrean toko saat ini:\n\n` +
-        `• Nomor Pesanan Terakhir   : \`AM-ACT-${lastCounter}\`\n` +
-        `• Nomor Pesanan Berikutnya : \`AM-ACT-${nextCounter}\`\n` +
-        `• Status Antrean Toko      : ${queueStatus}\n` +
+        `Current store transaction and queue summary:\n\n` +
+        `• Last Order Number   : \`AM-ACT-${lastCounter}\`\n` +
+        `• Next Order Number   : \`AM-ACT-${nextCounter}\`\n` +
+        `• Store Queue Status   : ${queueStatus}\n` +
         `────────────\n` +
-        `Silakan pilih fitur transaksi di bawah:`;
+        `Please choose a transaction feature below:`;
 }
 
 function getOwnerCatTransaksiKeyboard() {
-    const queueBtnText = isQueueOpen ? '🛑 Stop Antrean' : '🟢 Buka Antrean';
+    const queueBtnText = isQueueOpen ? '🛑 Stop Queue' : '🟢 Open Queue';
     return Markup.inlineKeyboard([
-        [Markup.button.callback('🔢 Ganti Nomor Pesanan', 'owner_change_counter')],
+        [Markup.button.callback('🔢 Change Order Number', 'owner_change_counter')],
         [Markup.button.callback(queueBtnText, 'owner_toggle_queue')],
         [
-            Markup.button.callback('🔄 Segarkan', 'owner_refresh_cat1'),
-            Markup.button.callback('« Kembali ke Panel', 'owner_dashboard')
+            Markup.button.callback('🔄 Refresh', 'owner_refresh_cat1'),
+            Markup.button.callback('« Back to Panel', 'owner_dashboard')
         ]
     ]);
 }
@@ -1024,24 +1024,24 @@ function getOwnerCatTransaksiKeyboard() {
 function getOwnerCatPemasaranText() {
     const totalUsers = registeredUsers.size;
     const channelStatus = CHANNEL_ID 
-        ? (forceSubEnabled ? `${CHANNEL_ID} (Aktif) 📢` : `${CHANNEL_ID} (Nonaktif) ⚪`) 
-        : 'Belum diatur (Bebas Masuk) ⚪';
+        ? (forceSubEnabled ? `${CHANNEL_ID} (Active) 📢` : `${CHANNEL_ID} (Inactive) ⚪`) 
+        : 'Not set (Open Access) ⚪';
 
-    return `📢 *PEMASARAN & PENGATURAN CHANNEL*\n` +
+    return `📢 *MARKETING & CHANNEL SETTINGS*\n` +
         `────────────\n` +
-        `Rangkuman statistik promosi dan channel toko saat ini:\n\n` +
-        `• Total Pelanggan Toko : *${totalUsers}* Pengguna\n` +
-        `• Syarat Wajib Channel : ${channelStatus}\n` +
+        `Current store promotion and channel summary:\n\n` +
+        `• Total Store Users    : *${totalUsers}* Users\n` +
+        `• Required Channel    : ${channelStatus}\n` +
         `────────────\n` +
-        `Silakan pilih fitur pemasaran di bawah:`;
+        `Please choose a marketing feature below:`;
 }
 
 function getOwnerCatPemasaranKeyboard() {
     return Markup.inlineKeyboard([
-        [Markup.button.callback('📢 Kirim Pesan Siaran (Broadcast)', 'owner_broadcast')],
-        [Markup.button.callback('⚙️ Pengaturan Wajib Channel', 'owner_channel_settings')],
-        [Markup.button.callback('👥 Data & Statistik Pelanggan', 'owner_user_stats')],
-        [Markup.button.callback('« Kembali ke Panel', 'owner_dashboard')]
+        [Markup.button.callback('📢 Send Broadcast Message', 'owner_broadcast')],
+        [Markup.button.callback('⚙️ Channel Requirement Settings', 'owner_channel_settings')],
+        [Markup.button.callback('👥 Customer Data & Stats', 'owner_user_stats')],
+        [Markup.button.callback('« Back to Panel', 'owner_dashboard')]
     ]);
 }
 
@@ -1050,62 +1050,62 @@ function getOwnerCatPemasaranKeyboard() {
 // -------------------------------------------------------------
 function getOwnerCatSistemText() {
     const sessionCount = userSessions.size;
-    const mtStatus = isMaintenance ? 'Aktif (Offline) ⛔' : 'Nonaktif (Online) 🟢';
-    return `🛠️ *PEMELIHARAAN & BANTUAN SISTEM*\n` +
+    const mtStatus = isMaintenance ? 'Active (Offline) ⛔' : 'Inactive (Online) 🟢';
+    return `🛠️ *SYSTEM MAINTENANCE & HELP*\n` +
         `────────────\n` +
-        `Alat bantu operasional dan pemeliharaan server bot:\n\n` +
-        `• Status Maintenance: *${mtStatus}*\n` +
-        `• Sesi Aktif di RAM : *${sessionCount}* Sesi\n` +
-        `• Database Counter  : \`order_counter.json\` (Siap Cadang)\n` +
-        `• Database User     : \`bot_users.json\` (${registeredUsers.size} User)\n` +
+        `Operational and maintenance tools for the bot server:\n\n` +
+        `• Maintenance Status: *${mtStatus}*\n` +
+        `• Active Sessions in RAM : *${sessionCount}* Sessions\n` +
+        `• Counter Database  : \`order_counter.json\` (Ready to Back Up)\n` +
+        `• User Database     : \`bot_users.json\` (${registeredUsers.size} User)\n` +
         `────────────\n` +
-        `Silakan pilih alat pemeliharaan di bawah:`;
+        `Please choose a maintenance tool below:`;
 }
 
 function getOwnerCatSistemKeyboard() {
-    const mtBtnText = isMaintenance ? '🟢 Matikan Maintenance (Buka Bot)' : '🛠️ Aktifkan Maintenance (Tutup Bot)';
+    const mtBtnText = isMaintenance ? '🟢 Disable Maintenance (Open Bot)' : '🛠️ Enable Maintenance (Close Bot)';
     const mtBtnAction = isMaintenance ? 'owner_maintenance_off' : 'owner_maintenance_on';
     return Markup.inlineKeyboard([
         [Markup.button.callback(mtBtnText, mtBtnAction)],
         [
-            Markup.button.callback('📬 Cek OTP Pembeli', 'owner_check_otp'),
-            Markup.button.callback('💾 Unduh Backup Data', 'owner_backup_data')
+            Markup.button.callback('📬 Check Buyer OTP', 'owner_check_otp'),
+            Markup.button.callback('💾 Download Data Backup', 'owner_backup_data')
         ],
         [
-            Markup.button.callback('🧹 Bersihkan Cache RAM', 'owner_clear_cache'),
-            Markup.button.callback('📖 Panduan Perintah (CMD)', 'owner_help_cmd')
+            Markup.button.callback('🧹 Clear RAM Cache', 'owner_clear_cache'),
+            Markup.button.callback('📖 Command Guide (CMD)', 'owner_help_cmd')
         ],
-        [Markup.button.callback('« Kembali ke Panel', 'owner_dashboard')]
+        [Markup.button.callback('« Back to Panel', 'owner_dashboard')]
     ]);
 }
 
 function getOwnerHelpText() {
-    return `📖 *DAFTAR PERINTAH KHUSUS OWNER*\n` +
+    return `📖 *OWNER COMMAND LIST*\n` +
         `────────────\n` +
-        `Berikut perintah cepat yang bisa langsung Anda ketik di chat:\n\n` +
-        `👑 *Navigasi & Dashboard:*\n` +
-        `• \`/owner\` atau \`/admin\` - Buka dashboard owner\n` +
-        `• \`/cmd\` - Tampilkan panduan perintah ini\n\n` +
-        `🛠️ *Pemeliharaan (Maintenance):*\n` +
-        `• \`/maintenance on\` (alias \`/mt on\`) - Aktifkan mode perbaikan & umumkan ke channel\n` +
-        `• \`/maintenance off\` (alias \`/mt off\`) - Matikan perbaikan & umumkan ke channel\n` +
-        `• \`/maintenance\` (alias \`/mt\`) - Cek status pemeliharaan saat ini\n\n` +
-        `🔢 *Transaksi & Antrean:*\n` +
-        `• \`/setpesanan <angka>\` atau \`/setnota\` - Ubah nomor pesanan (contoh: \`/setpesanan 514500\`)\n` +
-        `• \`/stopqueue\` - Tutup antrean pemesanan sementara\n` +
-        `• \`/startqueue\` - Buka kembali antrean pemesanan\n` +
-        `• \`/clearqueue\` - Kosongkan antrean pesanan masal\n\n` +
-        `📢 *Pemasaran & Pengguna:*\n` +
-        `• \`/broadcast <pesan>\` - Kirim siaran pesan ke semua pengguna\n` +
-        `• \`/broadcastpin <pesan>\` - Kirim siaran & disematkan (pin)\n` +
-        `• \`/users\` - Cek statistik total pengguna bot\n\n` +
-        `📬 *Bantuan Pelanggan:*\n` +
-        `• \`/cekinbox <email>\` - Intip kotak masuk & OTP akun pembeli\n\n` +
-        `⚙️ *Pengaturan & Pemeliharaan:*\n` +
-        `• \`/forcesub <on/off>\` - Aktif/matikan syarat wajib gabung channel\n` +
-        `• \`/setchannel <@channel>\` - Ganti username channel syarat\n` +
-        `• \`/backup\` - Unduh backup database counter & pengguna\n` +
-        `• \`/clearsession\` - Bersihkan seluruh cache RAM & sesi macet\n` +
+        `Quick commands you can type directly in chat:\n\n` +
+        `👑 *Navigation & Dashboard:*\n` +
+        `• \`/owner\` or \`/admin\` - Open the owner dashboard\n` +
+        `• \`/cmd\` - Show this command guide\n\n` +
+        `🛠️ *Maintenance:*\n` +
+        `• \`/maintenance on\` (alias \`/mt on\`) - Enable maintenance mode & announce to channel\n` +
+        `• \`/maintenance off\` (alias \`/mt off\`) - Disable maintenance & announce to channel\n` +
+        `• \`/maintenance\` (alias \`/mt\`) - Check current maintenance status\n\n` +
+        `🔢 *Transactions & Queue:*\n` +
+        `• \`/setpesanan <number>\` or \`/setnota\` - Change order number (example: \`/setpesanan 514500\`)\n` +
+        `• \`/stopqueue\` - Temporarily close the order queue\n` +
+        `• \`/startqueue\` - Reopen the order queue\n` +
+        `• \`/clearqueue\` - Clear the bulk order queue\n\n` +
+        `📢 *Marketing & Users:*\n` +
+        `• \`/broadcast <message>\` - Send a broadcast to all users\n` +
+        `• \`/broadcastpin <message>\` - Send a broadcast & pin it\n` +
+        `• \`/users\` - Check total bot user stats\n\n` +
+        `📬 *Customer Support:*\n` +
+        `• \`/cekinbox <email>\` - Peek at a buyer account's inbox & OTP\n\n` +
+        `⚙️ *Settings & Maintenance:*\n` +
+        `• \`/forcesub <on/off>\` - Enable/disable the required channel join\n` +
+        `• \`/setchannel <@channel>\` - Change the required channel username\n` +
+        `• \`/backup\` - Download counter & user database backup\n` +
+        `• \`/clearsession\` - Clear all RAM cache & stuck sessions\n` +
         `────────────`;
 }
 
@@ -1114,28 +1114,28 @@ async function sendBackupFiles(ctx) {
         const counterFile = path.join(DATA_DIR, 'order_counter.json');
         const usersFile = path.join(DATA_DIR, 'bot_users.json');
 
-        await ctx.reply('💾 *Mengirimkan file backup data toko...*', { parse_mode: 'Markdown' });
+        await ctx.reply('💾 *Sending store data backup files...*', { parse_mode: 'Markdown' });
 
         if (fs.existsSync(counterFile)) {
             await ctx.telegram.sendDocument(ctx.chat.id, { source: counterFile }, {
-                caption: `📊 *Backup Data Transaksi*\n• Nomor Pesanan Terakhir: \`AM-ACT-${orderCounter.getCurrentCounter()}\``,
+                caption: `📊 *Transaction Data Backup*\n• Last Order Number: \`AM-ACT-${orderCounter.getCurrentCounter()}\``,
                 parse_mode: 'Markdown'
             });
         }
         if (fs.existsSync(usersFile)) {
             await ctx.telegram.sendDocument(ctx.chat.id, { source: usersFile }, {
-                caption: `👥 *Backup Database Pelanggan*\n• Total Pengguna: *${registeredUsers.size} Pengguna*`,
+                caption: `👥 *Customer Database Backup*\n• Total Users: *${registeredUsers.size} Users*`,
                 parse_mode: 'Markdown'
             });
         }
 
-        await ctx.reply('💾 *Backup database toko berhasil dikirimkan!*', {
+        await ctx.reply('💾 *Store database backup sent successfully!*', {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Kembali ke Pemeliharaan', 'owner_cat_sistem')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Back to Maintenance', 'owner_cat_sistem')]])
         });
     } catch (err) {
-        return ctx.reply(`❌ Gagal mengirim backup: ${err.message}`, {
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Kembali ke Pemeliharaan', 'owner_cat_sistem')]])
+        return ctx.reply(`❌ Failed to send backup: ${err.message}`, {
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Back to Maintenance', 'owner_cat_sistem')]])
         });
     }
 }
@@ -1144,13 +1144,13 @@ async function sendBroadcastMessage(ctx, messageText, shouldPin = false) {
     const userList = Array.from(registeredUsers);
     const total = userList.length;
     if (total === 0) {
-        return ctx.reply('⚠️ Belum ada pengguna terdaftar untuk disiarkan.', {
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Kembali ke Pemasaran', 'owner_cat_pemasaran')]])
+        return ctx.reply('⚠️ No registered users to broadcast to.', {
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Back to Marketing', 'owner_cat_pemasaran')]])
         });
     }
 
     const progressMsg = await ctx.reply(
-        `📢 *MEMULAI SIARAN PESAN...*\n────────────\nTarget : *${total} Pengguna*\nMohon tunggu proses pengiriman berjalan...`,
+        `📢 *STARTING BROADCAST...*\n────────────\nTarget : *${total} Users*\nPlease wait while the messages are being sent...`,
         { parse_mode: 'Markdown' }
     );
 
@@ -1206,19 +1206,19 @@ async function sendBroadcastMessage(ctx, messageText, shouldPin = false) {
         saveRegisteredUsers();
     }
 
-    const report = `📢 *LAPORAN PESAN SIARAN SELESAI*\n` +
+    const report = `📢 *BROADCAST REPORT COMPLETED*\n` +
         `────────────\n` +
-        `• Target Pengguna : *${total} Pengguna*\n` +
-        `• Berhasil Terkirim : *${successCount}* ✅\n` +
-        `• Gagal / Ditolak   : *${failCount}* ❌\n` +
-        (cleanedCount > 0 ? `• Database Bersih   : *${cleanedCount} Akun Tidak Aktif Dihapus* 🧹\n` : '') +
-        (shouldPin ? `• Status Sematan    : Disematkan (Pin) 📌\n` : '') +
+        `• Target Users    : *${total} Users*\n` +
+        `• Sent Successfully : *${successCount}* ✅\n` +
+        `• Failed / Rejected : *${failCount}* ❌\n` +
+        (cleanedCount > 0 ? `• Database Cleaned  : *${cleanedCount} Inactive Accounts Removed* 🧹\n` : '') +
+        (shouldPin ? `• Pin Status        : Pinned 📌\n` : '') +
         `────────────\n` +
-        `Siaran telah selesai diproses.`;
+        `Broadcast processing is complete.`;
 
     const finishKb = Markup.inlineKeyboard([
-        [Markup.button.callback('« Kembali ke Pemasaran', 'owner_cat_pemasaran')],
-        [Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]
+        [Markup.button.callback('« Back to Marketing', 'owner_cat_pemasaran')],
+        [Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]
     ]);
 
     await ctx.telegram.editMessageText(ctx.chat.id, progressMsg.message_id, null, report, {
@@ -1238,7 +1238,7 @@ async function sendBroadcastMessage(ctx, messageText, shouldPin = false) {
 bot.command(['owner', 'admin'], async (ctx) => {
     const userId = ctx.from.id;
     if (!isAdmin(userId)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(userId);
     return ctx.reply(getOwnerDashboardText(userId), {
@@ -1249,24 +1249,24 @@ bot.command(['owner', 'admin'], async (ctx) => {
 
 bot.command(['setnota', 'setpesanan'], async (ctx) => {
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur mengubah nomor pesanan hanya dapat dilakukan oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can change the order number.');
     }
     const parts = ctx.message.text.trim().split(/\s+/);
     const cleanedDigits = parts.length >= 2 ? parts[1].replace(/\D/g, '') : '';
     if (!cleanedDigits || isNaN(parseInt(cleanedDigits, 10))) {
-        return ctx.reply('⚠️ Format salah. Gunakan: `/setpesanan <angka>`\nContoh: `/setpesanan 514500` (atau `/setpesanan AM-ACT-514500`)', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Use: `/setpesanan <angka>`\nExample: `/setpesanan 514500` (or `/setpesanan AM-ACT-514500`)', { parse_mode: 'Markdown' });
     }
     const newNum = parseInt(cleanedDigits, 10);
     orderCounter.setCounter(newNum);
     return ctx.reply(
-        `✅ *NOMOR PESANAN BERHASIL DIUBAH!*\n────────────\n` +
-        `• Nomor pesanan sekarang   : \`AM-ACT-${newNum}\`\n` +
-        `• Nomor pesanan berikutnya : \`AM-ACT-${newNum + 1}\`\n────────────`,
+        `✅ *ORDER NUMBER CHANGED SUCCESSFULLY!*\n────────────\n` +
+        `• Current order number : \`AM-ACT-${newNum}\`\n` +
+        `• Next order number    : \`AM-ACT-${newNum + 1}\`\n────────────`,
         {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-                [Markup.button.callback('« Kembali ke Transaksi', 'owner_cat_transaksi')],
-                [Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]
+                [Markup.button.callback('« Back to Transactions', 'owner_cat_transaksi')],
+                [Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]
             ])
         }
     );
@@ -1274,29 +1274,29 @@ bot.command(['setnota', 'setpesanan'], async (ctx) => {
 
 bot.command('broadcast', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const msg = ctx.message.text.replace(/^\/broadcast(@\w+)?\s*/i, '').trim();
     if (!msg) {
-        return ctx.reply('⚠️ Format salah. Masukkan pesan yang ingin disiarkan.\nContoh: `/broadcast Halo semua, bot siap melayani order!`', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Enter the message you want to broadcast.\nExample: `/broadcast Hello everyone, the bot is ready for orders!`', { parse_mode: 'Markdown' });
     }
     return sendBroadcastMessage(ctx, msg, false);
 });
 
 bot.command('broadcastpin', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const msg = ctx.message.text.replace(/^\/broadcastpin(@\w+)?\s*/i, '').trim();
     if (!msg) {
-        return ctx.reply('⚠️ Format salah. Masukkan pesan yang ingin disiarkan & disematkan.\nContoh: `/broadcastpin PENGUMUMAN PENTING...`', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Enter the message you want to broadcast & pin.\nExample: `/broadcastpin IMPORTANT ANNOUNCEMENT...`', { parse_mode: 'Markdown' });
     }
     return sendBroadcastMessage(ctx, msg, true);
 });
 
 bot.command('forcesub', async (ctx) => {
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur pengaturan channel hanya dapat dilakukan oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can change channel settings.');
     }
     const arg = ctx.message.text.split(/\s+/)[1]?.toLowerCase();
     if (arg === 'on') {
@@ -1307,21 +1307,21 @@ bot.command('forcesub', async (ctx) => {
         forceSubEnabled = !forceSubEnabled;
     }
     return ctx.reply(
-        `⚙️ Syarat wajib gabung channel ${CHANNEL_ID} sekarang: *${forceSubEnabled ? 'AKTIF ✅' : 'NONAKTIF ❌'}*`,
+        `⚙️ Required channel join for ${CHANNEL_ID} is now: *${forceSubEnabled ? 'ACTIVE ✅' : 'INACTIVE ❌'}*`,
         {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Kelola Channel', 'owner_channel_settings')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Manage Channel', 'owner_channel_settings')]])
         }
     );
 });
 
 bot.command('setchannel', async (ctx) => {
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur pengaturan channel hanya dapat dilakukan oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can change channel settings.');
     }
     const parts = ctx.message.text.trim().split(/\s+/);
     if (parts.length < 2) {
-        return ctx.reply('⚠️ Format salah. Gunakan: `/setchannel <@namachannel>`\nContoh: `/setchannel @canvalive`', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Use: `/setchannel <@channelname>`\nContoh: `/setchannel @canvalive`', { parse_mode: 'Markdown' });
     }
     let ch = parts[1].trim();
     if (!ch.startsWith('@') && !ch.startsWith('-100')) {
@@ -1344,30 +1344,30 @@ bot.command('setchannel', async (ctx) => {
     } catch { }
 
     return ctx.reply(
-        `✅ *CHANNEL BERHASIL DIUBAH!*\n────────────\nChannel sekarang: *${CHANNEL_ID}*`,
+        `✅ *CHANNEL CHANGED SUCCESSFULLY!*\n────────────\nCurrent channel: *${CHANNEL_ID}*`,
         {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Kelola Channel', 'owner_channel_settings')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Manage Channel', 'owner_channel_settings')]])
         }
     );
 });
 
 bot.command('cekinbox', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const parts = ctx.message.text.trim().split(/\s+/);
     if (parts.length < 2 || !parts[1].includes('@')) {
-        return ctx.reply('⚠️ Format salah. Gunakan: `/cekinbox <email>`\nContoh: `/cekinbox user@domain.com`', { parse_mode: 'Markdown' });
+        return ctx.reply('⚠️ Invalid format. Use: `/cekinbox <email>`\nExample: `/cekinbox user@domain.com`', { parse_mode: 'Markdown' });
     }
     const email = parts[1].toLowerCase().trim();
-    const waitMsg = await ctx.reply(`⏳ *Memeriksa kotak masuk untuk \`${email}\`...*`, { parse_mode: 'Markdown' });
+    const waitMsg = await ctx.reply(`⏳ *Checking inbox for \`${email}\`...*`, { parse_mode: 'Markdown' });
     return await renderInboxView(ctx, email, false, waitMsg?.message_id);
 });
 
 bot.command('backup', async (ctx) => {
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur unduh backup database hanya dapat dilakukan oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can download database backups.');
     }
     return sendBackupFiles(ctx);
 });
@@ -1375,7 +1375,7 @@ bot.command('backup', async (ctx) => {
 bot.command(['maintenance', 'mt'], async (ctx) => {
     const userId = ctx.from.id;
     if (!isAdmin(userId)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
 
     const text = ctx.message.text.trim();
@@ -1384,61 +1384,61 @@ bot.command(['maintenance', 'mt'], async (ctx) => {
 
     if (action === 'on' || action === 'aktif' || action === 'start') {
         if (isMaintenance) {
-            return ctx.reply('ℹ️ Mode Pemeliharaan (Maintenance) sudah dalam kondisi *AKTIF*.', { parse_mode: 'Markdown' });
+            return ctx.reply('ℹ️ Maintenance mode is already *ACTIVE*.', { parse_mode: 'Markdown' });
         }
         saveMaintenanceState(true, userId);
         broadcastMaintenanceToChannel(true).catch(() => {});
         return ctx.reply(
-            `🛠️ *PEMELIHARAAN SISTEM DIAKTIFKAN*\n────────────\n` +
-            `• Status Bot : *OFFLINE (Maintenance)* ⛔\n` +
-            `• Pengguna   : Tidak dapat membuat pesanan baru\n` +
-            `• Channel    : Pengumuman telah diposting ke ${CHANNEL_ID}\n` +
-            `• Admin      : Tetap dapat mengakses dan menguji bot\n────────────\n` +
-            `Gunakan \`/maintenance off\` atau tombol di bawah untuk mengakhiri pemeliharaan.`,
+            `🛠️ *SYSTEM MAINTENANCE ENABLED*\n────────────\n` +
+            `• Bot Status : *OFFLINE (Maintenance)* ⛔\n` +
+            `• Users      : Cannot place new orders\n` +
+            `• Channel    : Announcement posted to ${CHANNEL_ID}\n` +
+            `• Admin      : Can still access and test the bot\n────────────\n` +
+            `Use \`/maintenance off\` or the button below to end maintenance.`,
             {
                 parse_mode: 'Markdown',
-                ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Matikan Maintenance', 'owner_maintenance_off')]])
+                ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Disable Maintenance', 'owner_maintenance_off')]])
             }
         );
     }
 
     if (action === 'off' || action === 'nonaktif' || action === 'stop') {
         if (!isMaintenance) {
-            return ctx.reply('ℹ️ Mode Pemeliharaan (Maintenance) sudah dalam kondisi *NONAKTIF*.', { parse_mode: 'Markdown' });
+            return ctx.reply('ℹ️ Maintenance mode is already *INACTIVE*.', { parse_mode: 'Markdown' });
         }
         saveMaintenanceState(false, userId);
         broadcastMaintenanceToChannel(false).catch(() => {});
         return ctx.reply(
-            `🟢 *PEMELIHARAAN SISTEM DINONAKTIFKAN*\n────────────\n` +
-            `• Status Bot : *ONLINE (Normal)* ✅\n` +
-            `• Pengguna   : Sudah dapat memesan kembali secara normal\n` +
-            `• Channel    : Pengumuman pembukaan telah diposting ke ${CHANNEL_ID}\n────────────`,
+            `🟢 *SYSTEM MAINTENANCE DISABLED*\n────────────\n` +
+            `• Bot Status : *ONLINE (Normal)* ✅\n` +
+            `• Users      : Can order normally again\n` +
+            `• Channel    : Reopening announcement posted to ${CHANNEL_ID}\n────────────`,
             {
                 parse_mode: 'Markdown',
-                ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+                ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
             }
         );
     }
 
-    const statusText = isMaintenance ? '*AKTIF (OFFLINE)* ⛔' : '*NONAKTIF (ONLINE)* 🟢';
+    const statusText = isMaintenance ? '*ACTIVE (OFFLINE)* ⛔' : '*INACTIVE (ONLINE)* 🟢';
     const toggleBtn = isMaintenance
-        ? Markup.button.callback('🟢 Matikan Maintenance (Buka Bot)', 'owner_maintenance_off')
-        : Markup.button.callback('🛠️ Aktifkan Maintenance (Tutup Bot)', 'owner_maintenance_on');
+        ? Markup.button.callback('🟢 Disable Maintenance (Open Bot)', 'owner_maintenance_off')
+        : Markup.button.callback('🛠️ Enable Maintenance (Close Bot)', 'owner_maintenance_on');
 
     return ctx.reply(
-        `🛠️ *STATUS PEMELIHARAAN (MAINTENANCE)*\n────────────\n` +
-        `• Status Saat Ini : ${statusText}\n` +
+        `🛠️ *MAINTENANCE STATUS*\n────────────\n` +
+        `• Current Status : ${statusText}\n` +
         `• Target Channel : ${CHANNEL_ID}\n` +
         `────────────\n` +
-        `Gunakan perintah:\n` +
-        `• \`/maintenance on\` - Mengaktifkan pemeliharaan & info ke channel\n` +
-        `• \`/maintenance off\` - Mematikan pemeliharaan & info ke channel\n` +
-        `• Alias cepat: \`/mt on\` dan \`/mt off\``,
+        `Use these commands:\n` +
+        `• \`/maintenance on\` - Enable maintenance & notify the channel\n` +
+        `• \`/maintenance off\` - Disable maintenance & notify the channel\n` +
+        `• Quick aliases: \`/mt on\` and \`/mt off\``,
         {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
                 [toggleBtn],
-                [Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]
+                [Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]
             ])
         }
     );
@@ -1446,78 +1446,78 @@ bot.command(['maintenance', 'mt'], async (ctx) => {
 
 bot.action('owner_maintenance_on', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
     saveMaintenanceState(true, ctx.from.id);
     broadcastMaintenanceToChannel(true).catch(() => {});
-    await ctx.answerCbQuery('🛠️ Maintenance berhasil DIAKTIFKAN!', { show_alert: true }).catch(() => {});
+    await ctx.answerCbQuery('🛠️ Maintenance ENABLED successfully!', { show_alert: true }).catch(() => {});
     const text = getOwnerCatSistemText();
     try {
         await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getOwnerCatSistemKeyboard() });
     } catch {
-        await ctx.reply('🛠️ *Mode Maintenance AKTIF*. Pengumuman telah diposting ke channel.', {
+        await ctx.reply('🛠️ *Maintenance Mode ACTIVE*. Announcement posted to the channel.', {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Matikan Maintenance', 'owner_maintenance_off')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Disable Maintenance', 'owner_maintenance_off')]])
         });
     }
 });
 
 bot.action('owner_maintenance_off', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
     saveMaintenanceState(false, ctx.from.id);
     broadcastMaintenanceToChannel(false).catch(() => {});
-    await ctx.answerCbQuery('🟢 Maintenance berhasil DINONAKTIFKAN!', { show_alert: true }).catch(() => {});
+    await ctx.answerCbQuery('🟢 Maintenance DISABLED successfully!', { show_alert: true }).catch(() => {});
     const text = getOwnerCatSistemText();
     try {
         await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getOwnerCatSistemKeyboard() });
     } catch {
-        await ctx.reply('🟢 *Mode Maintenance NONAKTIF*. Bot telah dibuka kembali & diumumkan ke channel.', {
+        await ctx.reply('🟢 *Maintenance Mode INACTIVE*. The bot has been reopened & announced to the channel.', {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
         });
     }
 });
 
 bot.command('stopqueue', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     isQueueOpen = false;
-    return ctx.reply('🛑 *ANTREAN BERHASIL DITUTUP*\nPengguna biasa tidak dapat membuat pesanan baru hingga dibuka kembali.', {
+    return ctx.reply('🛑 *QUEUE CLOSED SUCCESSFULLY*\nRegular users cannot place new orders until it is reopened.', {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Buka Antrean', 'owner_toggle_queue')]])
+        ...Markup.inlineKeyboard([[Markup.button.callback('🟢 Open Queue', 'owner_toggle_queue')]])
     });
 });
 
 bot.command('startqueue', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     isQueueOpen = true;
-    return ctx.reply('🟢 *ANTREAN BERHASIL DIBUKA*\nPengguna sudah dapat melakukan pemesanan seperti biasa.', {
+    return ctx.reply('🟢 *QUEUE OPENED SUCCESSFULLY*\nUsers can place orders as usual.', {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
     });
 });
 
 bot.command('clearqueue', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const qCount = bulkQueue.length;
     bulkQueue.length = 0;
     saveBulkQueue();
-    return ctx.reply(`🧹 *ANTREAN DIBERSIHKAN*\nSebanyak ${qCount} antrean menunggu telah dikosongkan.`, {
+    return ctx.reply(`🧹 *QUEUE CLEARED*\n${qCount} waiting queue entries have been cleared.`, {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
     });
 });
 
 bot.command('clearsession', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const countSessions = userSessions.size;
     userSessions.clear();
@@ -1535,29 +1535,29 @@ bot.command('clearsession', async (ctx) => {
         userBulkStop.set(activeBulkJob.userId, false);
     }
     return ctx.reply(
-        `🧹 *PEMBERSIHAN CACHE BERHASIL*\n────────────\n• Sesi terhapus : *${countSessions}*\n• Status RAM    : Bebas & Optimal ✅`,
+        `🧹 *CACHE CLEARED SUCCESSFULLY*\n────────────\n• Sessions removed : *${countSessions}*\n• RAM Status       : Free & Optimal ✅`,
         {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
         }
     );
 });
 
 bot.command('users', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     return ctx.reply(
-        `👥 *STATISTIK PENGGUNA BOT*\n────────────\n` +
-        `• Total Pelanggan Terdaftar : *${registeredUsers.size} Pengguna*\n` +
-        `• Sesi Aktif di Memori RAM  : *${userSessions.size} Sesi*\n` +
-        `• Pesanan Masal Sedang Jalan: *${userBulkLock.size} Antrean*\n────────────\n` +
-        `ID Owner Terverifikasi : \`${OWNER_ID || 'Belum diatur'}\``,
+        `👥 *BOT USER STATISTICS*\n────────────\n` +
+        `• Total Registered Users : *${registeredUsers.size} Users*\n` +
+        `• Active Sessions in RAM : *${userSessions.size} Sessions*\n` +
+        `• Bulk Orders Running    : *${userBulkLock.size} Jobs*\n────────────\n` +
+        `Verified Owner ID : \`${OWNER_ID || 'Not set'}\``,
         {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-                [Markup.button.callback('📢 Broadcast Pesan', 'owner_broadcast')],
-                [Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]
+                [Markup.button.callback('📢 Broadcast Message', 'owner_broadcast')],
+                [Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]
             ])
         }
     );
@@ -1565,11 +1565,11 @@ bot.command('users', async (ctx) => {
 
 bot.command(['cmd', 'helpadmin'], async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     return ctx.reply(getOwnerHelpText(), {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]])
+        ...Markup.inlineKeyboard([[Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]])
     });
 });
 
@@ -1579,7 +1579,7 @@ bot.command(['cmd', 'helpadmin'], async (ctx) => {
 bot.action('owner_dashboard', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
     const text = getOwnerDashboardText(ctx.from.id);
@@ -1593,7 +1593,7 @@ bot.action('owner_dashboard', async (ctx) => {
 bot.action('owner_open_controls', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
     const text = getOwnerDashboardText(ctx.from.id);
@@ -1606,9 +1606,9 @@ bot.action('owner_open_controls', async (ctx) => {
 
 bot.action('owner_refresh_dash', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
-    await ctx.answerCbQuery('🔄 Data toko diperbarui!').catch(() => { });
+    await ctx.answerCbQuery('🔄 Store data refreshed!').catch(() => { });
     const text = getOwnerDashboardText(ctx.from.id);
     try {
         await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getOwnerDashboardKeyboard() });
@@ -1619,7 +1619,7 @@ bot.action('owner_refresh_dash', async (ctx) => {
 bot.action('owner_cat_transaksi', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
     const text = getOwnerCatTransaksiText();
@@ -1632,9 +1632,9 @@ bot.action('owner_cat_transaksi', async (ctx) => {
 
 bot.action('owner_refresh_cat1', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
-    await ctx.answerCbQuery('🔄 Data transaksi diperbarui!').catch(() => { });
+    await ctx.answerCbQuery('🔄 Transaction data refreshed!').catch(() => { });
     const text = getOwnerCatTransaksiText();
     try {
         await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getOwnerCatTransaksiKeyboard() });
@@ -1643,10 +1643,10 @@ bot.action('owner_refresh_cat1', async (ctx) => {
 
 bot.action('owner_toggle_queue', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
     isQueueOpen = !isQueueOpen;
-    const alertMsg = isQueueOpen ? '🟢 Antrean pemesanan berhasil DIBUKA!' : '🛑 Antrean pemesanan berhasil DITUTUP!';
+    const alertMsg = isQueueOpen ? '🟢 Order queue OPENED successfully!' : '🛑 Order queue CLOSED successfully!';
     await ctx.answerCbQuery(alertMsg, { show_alert: true }).catch(() => { });
 
     const text = getOwnerCatTransaksiText();
@@ -1658,29 +1658,29 @@ bot.action('owner_toggle_queue', async (ctx) => {
 bot.action('owner_change_counter', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner.');
     }
     const session = getSession(ctx.from.id);
     session.state = 'OWNER_SET_COUNTER';
 
     const currentCounter = orderCounter.getCurrentCounter();
-    const promptText = `🔢 *GANTI NOMOR PESANAN TRANSAKSI*\n` +
+    const promptText = `🔢 *CHANGE TRANSACTION ORDER NUMBER*\n` +
         `────────────\n` +
-        `Nomor pesanan saat ini   : \`AM-ACT-${currentCounter}\`\n` +
-        `Nomor pesanan berikutnya : \`AM-ACT-${currentCounter + 1}\`\n\n` +
-        `Silakan ketik nomor pesanan baru yang diinginkan (hanya angka):\n` +
-        `_Contoh: ketik \`515000\` atau \`AM-ACT-515000\`_\n\n` +
-        `_Atau bisa ketik langsung kapan saja: \`/setpesanan <angka>\`_`;
+        `Current order number : \`AM-ACT-${currentCounter}\`\n` +
+        `Next order number    : \`AM-ACT-${currentCounter + 1}\`\n\n` +
+        `Please type the new order number you want (digits only):\n` +
+        `_Example: type \`515000\` or \`AM-ACT-515000\`_\n\n` +
+        `_Or type this command anytime: \`/setpesanan <number>\`_`;
 
     try {
         await ctx.editMessageText(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_transaksi')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_transaksi')]])
         });
     } catch {
         await ctx.reply(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_transaksi')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_transaksi')]])
         });
     }
 });
@@ -1689,7 +1689,7 @@ bot.action('owner_change_counter', async (ctx) => {
 bot.action('owner_cat_pemasaran', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
     const text = getOwnerCatPemasaranText();
@@ -1703,29 +1703,29 @@ bot.action('owner_cat_pemasaran', async (ctx) => {
 bot.action('owner_broadcast', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const session = getSession(ctx.from.id);
     session.state = 'OWNER_BROADCAST';
 
-    const promptText = `📢 *KIRIM PESAN SIARAN (BROADCAST)*\n` +
+    const promptText = `📢 *SEND BROADCAST MESSAGE*\n` +
         `────────────\n` +
-        `Target penerima : *${registeredUsers.size} Pengguna*\n\n` +
-        `Silakan ketik pesan siaran yang ingin dikirimkan ke semua pengguna bot di chat ini:\n` +
-        `_(Mendukung format tulisan tebal, miring, link, dan emoji)_\n\n` +
-        `_Tips: Bisa juga gunakan perintah langsung kapan saja:_\n` +
+        `Recipients : *${registeredUsers.size} Users*\n\n` +
+        `Please type the broadcast message to send to all bot users in this chat:\n` +
+        `_(Supports bold, italic, links, and emoji)_\n\n` +
+        `_Tip: You can also use these commands anytime:_\n` +
         `• \`/broadcast <pesan>\`\n` +
-        `• \`/broadcastpin <pesan>\` (otomatis pin pesan)`;
+        `• \`/broadcastpin <pesan>\` (auto-pins the message)`;
 
     try {
         await ctx.editMessageText(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_pemasaran')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_pemasaran')]])
         });
     } catch {
         await ctx.reply(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_pemasaran')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_pemasaran')]])
         });
     }
 });
@@ -1733,25 +1733,25 @@ bot.action('owner_broadcast', async (ctx) => {
 bot.action('owner_channel_settings', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur pengaturan channel hanya dapat diakses oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can access channel settings.');
     }
     clearSession(ctx.from.id);
 
-    const statusText = forceSubEnabled ? 'Aktif ✅' : 'Nonaktif ❌';
-    const toggleBtnLabel = forceSubEnabled ? '🔴 Matikan Syarat Gabung' : '🟢 Aktifkan Syarat Gabung';
+    const statusText = forceSubEnabled ? 'Active ✅' : 'Inactive ❌';
+    const toggleBtnLabel = forceSubEnabled ? '🔴 Disable Join Requirement' : '🟢 Enable Join Requirement';
 
-    const text = `⚙️ *PENGATURAN CHANNEL TELEGRAM*\n` +
+    const text = `⚙️ *TELEGRAM CHANNEL SETTINGS*\n` +
         `────────────\n` +
-        `Kelola pengaturan channel untuk bukti transaksi dan syarat penggunaan bot:\n\n` +
-        `• Channel Target : *${CHANNEL_ID}*\n` +
-        `• Wajib Gabung   : *${statusText}*\n` +
+        `Manage the channel used for transaction proofs and bot usage requirements:\n\n` +
+        `• Target Channel : *${CHANNEL_ID}*\n` +
+        `• Required Join  : *${statusText}*\n` +
         `────────────\n` +
-        `Silakan pilih opsi pengaturan di bawah:`;
+        `Please choose a settings option below:`;
 
     const kb = Markup.inlineKeyboard([
         [Markup.button.callback(toggleBtnLabel, 'owner_toggle_forcesub')],
-        [Markup.button.callback('✏️ Ganti Username Channel', 'owner_change_channel')],
-        [Markup.button.callback('« Kembali ke Pemasaran', 'owner_cat_pemasaran')]
+        [Markup.button.callback('✏️ Change Channel Username', 'owner_change_channel')],
+        [Markup.button.callback('« Back to Marketing', 'owner_cat_pemasaran')]
     ]);
 
     try {
@@ -1763,27 +1763,27 @@ bot.action('owner_channel_settings', async (ctx) => {
 
 bot.action('owner_toggle_forcesub', async (ctx) => {
     if (!isOwner(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner only.', { show_alert: true }).catch(() => { });
     }
     forceSubEnabled = !forceSubEnabled;
-    const msg = forceSubEnabled ? '🟢 Syarat wajib gabung channel DIAKTIFKAN!' : '🔴 Syarat wajib gabung channel DINONAKTIFKAN!';
+    const msg = forceSubEnabled ? '🟢 Required channel join ENABLED!' : '🔴 Required channel join DISABLED!';
     await ctx.answerCbQuery(msg, { show_alert: true }).catch(() => { });
 
-    const statusText = forceSubEnabled ? 'Aktif ✅' : 'Nonaktif ❌';
-    const toggleBtnLabel = forceSubEnabled ? '🔴 Matikan Syarat Gabung' : '🟢 Aktifkan Syarat Gabung';
+    const statusText = forceSubEnabled ? 'Active ✅' : 'Inactive ❌';
+    const toggleBtnLabel = forceSubEnabled ? '🔴 Disable Join Requirement' : '🟢 Enable Join Requirement';
 
-    const text = `⚙️ *PENGATURAN CHANNEL TELEGRAM*\n` +
+    const text = `⚙️ *TELEGRAM CHANNEL SETTINGS*\n` +
         `────────────\n` +
-        `Kelola pengaturan channel untuk bukti transaksi dan syarat penggunaan bot:\n\n` +
-        `• Channel Target : *${CHANNEL_ID}*\n` +
-        `• Wajib Gabung   : *${statusText}*\n` +
+        `Manage the channel used for transaction proofs and bot usage requirements:\n\n` +
+        `• Target Channel : *${CHANNEL_ID}*\n` +
+        `• Required Join  : *${statusText}*\n` +
         `────────────\n` +
-        `Silakan pilih opsi pengaturan di bawah:`;
+        `Please choose a settings option below:`;
 
     const kb = Markup.inlineKeyboard([
         [Markup.button.callback(toggleBtnLabel, 'owner_toggle_forcesub')],
-        [Markup.button.callback('✏️ Ganti Username Channel', 'owner_change_channel')],
-        [Markup.button.callback('« Kembali ke Pemasaran', 'owner_cat_pemasaran')]
+        [Markup.button.callback('✏️ Change Channel Username', 'owner_change_channel')],
+        [Markup.button.callback('« Back to Marketing', 'owner_cat_pemasaran')]
     ]);
 
     try {
@@ -1794,27 +1794,27 @@ bot.action('owner_toggle_forcesub', async (ctx) => {
 bot.action('owner_change_channel', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner.');
     }
     const session = getSession(ctx.from.id);
     session.state = 'OWNER_SET_CHANNEL';
 
-    const promptText = `✏️ *GANTI USERNAME CHANNEL*\n` +
+    const promptText = `✏️ *CHANGE CHANNEL USERNAME*\n` +
         `────────────\n` +
-        `Channel saat ini: *${CHANNEL_ID}*\n\n` +
-        `Silakan ketik username channel baru Anda (contoh: \`@canvalive\`):\n` +
-        `_(Pastikan bot sudah dijadikan Administrator di channel tersebut agar bisa memposting notifikasi)_\n\n` +
-        `_Atau gunakan perintah: \`/setchannel <@channel>\`_`;
+        `Current channel: *${CHANNEL_ID}*\n\n` +
+        `Please type your new channel username (example: \`@canvalive\`):\n` +
+        `_(Make sure the bot is an Administrator in that channel so it can post notifications)_\n\n` +
+        `_Or use the command: \`/setchannel <@channel>\`_`;
 
     try {
         await ctx.editMessageText(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_channel_settings')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_channel_settings')]])
         });
     } catch {
         await ctx.reply(promptText, {
             parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_channel_settings')]])
+            ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_channel_settings')]])
         });
     }
 });
@@ -1822,23 +1822,23 @@ bot.action('owner_change_channel', async (ctx) => {
 bot.action('owner_user_stats', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
 
-    const text = `👥 *DATA & STATISTIK PELANGGAN*\n` +
+    const text = `👥 *CUSTOMER DATA & STATS*\n` +
         `────────────\n` +
-        `Berikut statistik interaksi pelanggan di bot Alight Motion Anda:\n\n` +
-        `• Total Pelanggan Terdaftar : *${registeredUsers.size} Pengguna*\n` +
-        `• Sesi Pengguna Aktif RAM   : *${userSessions.size} Sesi*\n` +
-        `• Pesanan Masal Berjalan    : *${userBulkLock.size} Antrean*\n` +
-        `• Status Antrean Pemesanan  : *${isQueueOpen ? 'Dibuka (Normal) ✅' : 'Ditutup (Maintenance) 🛑'}*\n` +
+        `Here are the customer interaction stats for your Alight Motion bot:\n\n` +
+        `• Total Registered Users : *${registeredUsers.size} Users*\n` +
+        `• Active User Sessions   : *${userSessions.size} Sessions*\n` +
+        `• Bulk Orders Running    : *${userBulkLock.size} Jobs*\n` +
+        `• Order Queue Status    : *${isQueueOpen ? 'Open (Normal) ✅' : 'Closed (Maintenance) 🛑'}*\n` +
         `────────────\n` +
-        `ID Owner Terverifikasi : \`${OWNER_ID || 'Belum diatur'}\``;
+        `Verified Owner ID : \`${OWNER_ID || 'Not set'}\``;
 
     const kb = Markup.inlineKeyboard([
-        [Markup.button.callback('📢 Kirim Pesan Siaran', 'owner_broadcast')],
-        [Markup.button.callback('« Kembali ke Pemasaran', 'owner_cat_pemasaran')]
+        [Markup.button.callback('📢 Send Broadcast Message', 'owner_broadcast')],
+        [Markup.button.callback('« Back to Marketing', 'owner_cat_pemasaran')]
     ]);
 
     try {
@@ -1852,7 +1852,7 @@ bot.action('owner_user_stats', async (ctx) => {
 bot.action('owner_cat_sistem', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
     const text = getOwnerCatSistemText();
@@ -1866,19 +1866,19 @@ bot.action('owner_cat_sistem', async (ctx) => {
 bot.action('owner_check_otp', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     const session = getSession(ctx.from.id);
     session.state = 'OWNER_CHECK_OTP';
 
-    const promptText = `📬 *CEK KOTAK MASUK & OTP PEMBELI*\n` +
+    const promptText = `📬 *CHECK BUYER INBOX & OTP*\n` +
         `────────────\n` +
-        `Silakan ketik alamat email pembeli yang ingin Anda periksa:\n\n` +
-        `• Contoh: \`alight1234@wikinime.com\`\n` +
-        `• Atau ketik perintah: \`/cekinbox email_pembeli\`\n\n` +
-        `Ketik alamat email di bawah ini:`;
+        `Please type the buyer's email address you want to check:\n\n` +
+        `• Example: \`alight1234@wikinime.com\`\n` +
+        `• Or use the command: \`/cekinbox email_pembeli\`\n\n` +
+        `Type the email address below:`;
 
-    const keyboard = Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_sistem')]]);
+    const keyboard = Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_sistem')]]);
 
     try {
         await ctx.editMessageText(promptText, {
@@ -1900,31 +1900,31 @@ bot.action('owner_check_otp', async (ctx) => {
 bot.action('owner_backup_data', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Ditolak: Fitur unduh backup database hanya dapat dilakukan oleh Owner utama toko.');
+        return ctx.reply('⛔ Access Denied: Only the main store Owner can download database backups.');
     }
     return sendBackupFiles(ctx);
 });
 
 bot.action('owner_clear_cache', async (ctx) => {
     if (!isAdmin(ctx.from.id)) {
-        return ctx.answerCbQuery('⛔ Akses Khusus Owner / Admin.', { show_alert: true }).catch(() => { });
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
     }
     const sessionCount = userSessions.size;
     userSessions.clear();
     userBulkLock.clear();
     userBulkStop.clear();
 
-    await ctx.answerCbQuery('🧹 Cache memori & sesi berhasil dibersihkan!', { show_alert: true }).catch(() => { });
+    await ctx.answerCbQuery('🧹 Memory cache & sessions cleared successfully!', { show_alert: true }).catch(() => { });
 
-    const text = `🧹 *PEMBERSIHAN CACHE BERHASIL*\n` +
+    const text = `🧹 *CACHE CLEARED SUCCESSFULLY*\n` +
         `────────────\n` +
-        `• Sesi RAM dibersihkan : *${sessionCount} Sesi*\n` +
-        `• Status Kunci Proses  : *0 (Bebas)*\n` +
-        `• Kondisi Bot          : *Segar & Ringan* ✅\n` +
+        `• RAM sessions cleared : *${sessionCount} Sessions*\n` +
+        `• Process Locks        : *0 (Free)*\n` +
+        `• Bot Condition        : *Fresh & Light* ✅\n` +
         `────────────`;
 
     const kb = Markup.inlineKeyboard([
-        [Markup.button.callback('« Kembali ke Pemeliharaan', 'owner_cat_sistem')]
+        [Markup.button.callback('« Back to Maintenance', 'owner_cat_sistem')]
     ]);
 
     try {
@@ -1937,13 +1937,13 @@ bot.action('owner_clear_cache', async (ctx) => {
 bot.action('owner_help_cmd', async (ctx) => {
     await ctx.answerCbQuery().catch(() => { });
     if (!isAdmin(ctx.from.id)) {
-        return ctx.reply('⛔ Akses Khusus: Perintah ini hanya dapat digunakan oleh Owner / Admin toko.');
+        return ctx.reply('⛔ Restricted: This command can only be used by the store Owner / Admin.');
     }
     clearSession(ctx.from.id);
 
     const text = getOwnerHelpText();
     const kb = Markup.inlineKeyboard([
-        [Markup.button.callback('« Kembali ke Pemeliharaan', 'owner_cat_sistem')]
+        [Markup.button.callback('« Back to Maintenance', 'owner_cat_sistem')]
     ]);
 
     try {
@@ -3302,30 +3302,30 @@ bot.on('text', async (ctx) => {
     if (session.state === 'OWNER_SET_COUNTER') {
         if (!isOwner(userId)) {
             clearSession(userId);
-            return ctx.reply('⛔ Akses ditolak.');
+            return ctx.reply('⛔ Access denied.');
         }
         const cleanedDigits = text.replace(/\D/g, '');
         const newNum = parseInt(cleanedDigits, 10);
         if (!cleanedDigits || isNaN(newNum) || newNum < 1) {
             return ctx.reply(
-                '⚠️ Mohon masukkan angka nomor pesanan yang valid (contoh: `514500` atau `AM-ACT-514500`):',
+                '⚠️ Please enter a valid order number (example: `514500` or `AM-ACT-514500`):',
                 {
                     parse_mode: 'Markdown',
-                    ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_transaksi')]])
+                    ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_transaksi')]])
                 }
             );
         }
         orderCounter.setCounter(newNum);
         clearSession(userId);
         return ctx.reply(
-            `✅ *NOMOR PESANAN BERHASIL DIUBAH!*\n────────────\n` +
-            `• Nomor pesanan sekarang   : \`AM-ACT-${newNum}\`\n` +
-            `• Nomor pesanan berikutnya : \`AM-ACT-${newNum + 1}\`\n────────────`,
+            `✅ *ORDER NUMBER CHANGED SUCCESSFULLY!*\n────────────\n` +
+            `• Current order number : \`AM-ACT-${newNum}\`\n` +
+            `• Next order number    : \`AM-ACT-${newNum + 1}\`\n────────────`,
             {
                 parse_mode: 'Markdown',
                 ...Markup.inlineKeyboard([
-                    [Markup.button.callback('« Kembali ke Transaksi', 'owner_cat_transaksi')],
-                    [Markup.button.callback('👑 Panel Owner', 'owner_dashboard')]
+                    [Markup.button.callback('« Back to Transactions', 'owner_cat_transaksi')],
+                    [Markup.button.callback('👑 Owner Panel', 'owner_dashboard')]
                 ])
             }
         );
@@ -3335,7 +3335,7 @@ bot.on('text', async (ctx) => {
     if (session.state === 'OWNER_BROADCAST') {
         if (!isAdmin(userId)) {
             clearSession(userId);
-            return ctx.reply('⛔ Akses ditolak.');
+            return ctx.reply('⛔ Access denied.');
         }
         clearSession(userId);
         return sendBroadcastMessage(ctx, text, false);
@@ -3345,20 +3345,20 @@ bot.on('text', async (ctx) => {
     if (session.state === 'OWNER_CHECK_OTP') {
         if (!isAdmin(userId)) {
             clearSession(userId);
-            return ctx.reply('⛔ Akses ditolak.');
+            return ctx.reply('⛔ Access denied.');
         }
         const emailInput = text.toLowerCase().trim();
         if (!emailInput.includes('@') || !emailInput.includes('.')) {
             return ctx.reply(
-                '⚠️ Format email tidak valid. Masukkan alamat email yang benar (contoh: `user@wikinime.com`):',
+                '⚠️ Invalid email format. Enter a valid email address (example: `user@wikinime.com`):',
                 {
                     parse_mode: 'Markdown',
-                    ...Markup.inlineKeyboard([[Markup.button.callback('« Batal', 'owner_cat_sistem')]])
+                    ...Markup.inlineKeyboard([[Markup.button.callback('« Cancel', 'owner_cat_sistem')]])
                 }
             );
         }
         clearSession(userId);
-        const waitMsg = await ctx.reply(`⏳ *Memeriksa kotak masuk untuk \`${emailInput}\`...*`, { parse_mode: 'Markdown' });
+        const waitMsg = await ctx.reply(`⏳ *Checking inbox for \`${emailInput}\`...*`, { parse_mode: 'Markdown' });
         return await renderInboxView(ctx, emailInput, false, waitMsg?.message_id);
     }
 
@@ -3366,7 +3366,7 @@ bot.on('text', async (ctx) => {
     if (session.state === 'OWNER_SET_CHANNEL') {
         if (!isOwner(userId)) {
             clearSession(userId);
-            return ctx.reply('⛔ Akses ditolak.');
+            return ctx.reply('⛔ Access denied.');
         }
         let ch = text.trim();
         if (!ch.startsWith('@') && !ch.startsWith('-100')) {
@@ -3390,10 +3390,10 @@ bot.on('text', async (ctx) => {
 
         clearSession(userId);
         return ctx.reply(
-            `✅ *CHANNEL BERHASIL DIUBAH!*\n────────────\nChannel sekarang: *${CHANNEL_ID}*`,
+            `✅ *CHANNEL CHANGED SUCCESSFULLY!*\n────────────\nCurrent channel: *${CHANNEL_ID}*`,
             {
                 parse_mode: 'Markdown',
-                ...Markup.inlineKeyboard([[Markup.button.callback('« Kembali ke Pengaturan', 'owner_channel_settings')]])
+                ...Markup.inlineKeyboard([[Markup.button.callback('« Back to Settings', 'owner_channel_settings')]])
             }
         );
     }
