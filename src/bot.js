@@ -323,9 +323,6 @@ const STRM_MENU_KEYBOARD = () => ({
             styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
         ],
         [
-            styledBtn('🔎 Check Auto', 'strm_check_auto', 'success')
-        ],
-        [
             styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
             styledBtn('❌ ပိတ်မည်', 'strm_cancel', 'danger')
         ]
@@ -365,19 +362,13 @@ bot.action(/^strm_/, async (ctx) => {
         return sendGenMenu(ctx);
     }
 
-    if (data === 'strm_check_auto') {
+    if (data === 'strm_open') {
+        if (!isOwner(ctx.from.id)) {
+            return ctx.answerCbQuery('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။', { show_alert: true });
+        }
         await ctx.answerCbQuery();
-        const res = await checkStreamingStock();
-        if (!res || !res.success) {
-            return ctx.reply(`❌ Error: ${res?.message}`);
-        }
-        const wanted = [['NF', 'netflix'], ['HB', 'hbo'], ['PR', 'prime']];
-        let text = '🔎 *Auto Stock (NF / HB / PR)*\n\n';
-        for (const [label, key] of wanted) {
-            const entry = Object.entries(res.data).find(([plat]) => plat.toLowerCase().includes(key));
-            text += `• *${label}*: \`${entry ? stockCount(entry[1]) : 0}\` ခု\n`;
-        }
-        return ctx.reply(text, { parse_mode: 'Markdown' });
+        await ctx.deleteMessage().catch(() => {});
+        return sendGenMenu(ctx);
     }
 
     if (data === 'strm_check_stock') {
@@ -460,7 +451,7 @@ bot.action(/^strm_/, async (ctx) => {
             }
 
             successMsg +=
-                `📖 *အသုံးပြုပုံ:* ${acc.instructions}\n` +
+                `📖 *How to use:* Open the direct link to log in instantly, or open the VIP link in a browser with the VIP extension installed.\n` +
                 `──────────────────\n` +
                 `💳 *သုံးစွဲမှု:* ${bill.type_used || '-'} | *လက်ကျန် Quota:* \`${bill.remaining_quota ?? '-'}\` | *Credits:* \`${bill.remaining_credits ?? '-'}\``;
 
@@ -1054,15 +1045,15 @@ function getMainKeyboard(userId, ctxFrom = null) {
     const lang = getUserLang(userId, ctxFrom);
     return Markup.inlineKeyboard([
         [
+            styledBtn('🔎 Check Auto', 'strm_open', 'success')
+        ],
+        [
             styledBtn(i18n.t(lang, 'menu.btn_single'), 'menu_single', 'primary'),
             styledBtn(i18n.t(lang, 'menu.btn_custom'), 'menu_custom_email', 'success')
         ],
         [
             styledBtn(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk', 'success'),
             styledBtn(i18n.t(lang, 'menu.btn_language'), 'menu_language', 'primary')
-        ],
-        [
-            styledBtn('🔎 Check Auto', 'strm_check_auto', 'success')
         ]
     ]);
 }
