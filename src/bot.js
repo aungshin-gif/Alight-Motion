@@ -224,6 +224,192 @@ if (!BOT_TOKEN || BOT_TOKEN === 'YOUR_TELEGRAM_BOT_TOKEN_HERE') {
 }
 
 const bot = new Telegraf(BOT_TOKEN);
+// ==========================================
+// 🎬 STREAMING RESELLER BOT FLOW (TELEGRAF)
+// ==========================================
+
+// ၁။ /stock - လက်ကျန် Stock စစ်ဆေးခြင်း
+bot.command('stock', async (ctx) => {
+    const waitMsg = await ctx.reply('⏳ လက်ကျန် Stock စာရင်းကို စစ်ဆေးနေပါသည်...');
+    const res = await checkStreamingStock();
+
+    if (!res || !res.success || !res.data) {
+        return ctx.telegram.editMessageText(
+            ctx.chat.id,
+            waitMsg.message_id,
+            undefined,
+            `❌ Stock စစ်ဆေး၍မရပါ: ${res?.message || 'Server Error'}`
+        );
+    }
+
+    let text = '📦 *လက်ရှိ ရရှိနိုင်သော Streaming Stock စာရင်း*\n\n';
+    for (const [platform, info] of Object.entries(res.data)) {
+        text += `🔹 *${platform.toUpperCase()}* — စုစုပေါင်း: \`${info.total_active}\` ခု\n`;
+        if (info.by_region) {
+            const regions = Object.entries(info.by_region)
+                .map(([reg, count]) => `${reg}:${count}`)
+                .join(' | ');
+            text += `   └ 🌍 Region: ${regions}\n`;
+        }
+        text += '\n';
+    }
+
+    return ctx.telegram.editMessageText(ctx.chat.id, waitMsg.message_id, undefined, text, {
+        parse_mode: 'Markdown'
+    });
+});
+
+// ၂။ /apiprofile - Owner သီးသန့် Quota နှင့် Credit စစ်ဆေးခြင်း
+bot.command('apiprofile', async (ctx) => {
+    if (!isOwner(ctx.from.id)) {
+        return ctx.reply('⛔ ဤ Command ကို Owner သာ အသုံးပြုနိုင်ပါသည်။');
+    }
+
+    const res = await checkResellerProfile();
+    if (!res || !res.success) {
+        return ctx.reply(`❌ Profile စစ်ဆေး၍မရပါ: ${res?.message || 'Error'}`);
+    }
+
+    const d = res.data;
+    const profileText =
+        `👤 *Reseller API Profile*\n\n` +
+        `• *Username:* \`${d.username}\`\n` +
+        `• *Plan:* ${d.plan_name} (${d.membership_active ? '✅ Active' : '❌ Expired'})\n` +
+        `• *Expiry:* \`${d.membership_expiry}\`\n` +
+        `• *ယနေ့ကျန်ရှိသော Quota:* \`${d.quota_remaining_today} / ${d.quota_limit}\`\n` +
+        `• *လက်ကျန် Credits:* \`${d.credits}\``;
+
+    return ctx.reply(profileText, { parse_mode: 'Markdown' });
+});
+
+// ၃။ /gen သို့မဟုတ် /streaming - အကောင့်ထုတ်ယူရန် မီနူး
+bot.command(['gen', 'streaming'], async (ctx) => {
+    if (!isOwner(ctx.from.id)) {
+        return ctx.reply('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။');
+    }
+
+    return ctx.reply('🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*', {
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    { text: '🔴 Netflix', callback_data: 'strm_plat_netflix' },
+                    { text: '🔵 Prime Video', callback_data: 'strm_plat_prime' }
+                ],
+                [
+                    { text: '🟣 HBO Max', callback_data: 'strm_plat_hbo' },
+                    { text: '🟠 Crunchyroll', callback_data: 'strm_plat_crunchyroll' }
+                ],
+                [
+                    { text: '🟢 ChatGPT Plus/Pro', callback_data: 'strm_plat_chatgpt' }
+                ],
+                [
+                    { text: '📦 Check Stock', callback_data: 'strm_check_stock' },
+                    { text: '❌ ပိတ်မည်', callback_data: 'strm_cancel' }
+                ]
+            ]
+        }
+    });
+});
+
+// ၄။ ခလုတ်နှိပ်မှုများကို ဖမ်းယူခြင်း
+bot.action(/^strm_/, async (ctx) => {
+    const data = ctx.callbackQuery.data;
+
+    if (data === 'strm_cancel') {
+        await ctx.answerCbQuery('ပိတ်လိုက်ပါပြီ');
+        return ctx.deleteMessage().catch(() => {});
+    }
+
+    if (data === 'strm_check_stock') {
+        await ctx.answerCbQuery();
+        const res = await checkStreamingStock();
+        if (!res || !res.success) {
+            return ctx.reply(`❌ Error: ${res?.message}`);
+        }
+        let text = '📦 *လက်ကျန် Stock စာရင်း*\n\n';
+        for (const [plat, info] of Object.entries(res.data)) {
+            text += `• *${plat.toUpperCase()}*: \`${info.total_active}\` ခု\n`;
+        }
+        return ctx.reply(text, { parse_mode: 'Markdown' });
+    }
+
+    if (data.startsWith('strm_plat_')) {
+        const platform = data.replace('strm_plat_', '');
+        await ctx.answerCbQuery();
+
+        const regionButtons = platform === 'netflix'
+            ? [
+                [
+                    { text: '🇸🇬 SG', callback_data: `strm_gen_${platform}_SG` },
+                    { text: '🇮🇩 ID', callback_data: `strm_gen_${platform}_ID` },
+                    { text: '🇹🇷 TR', callback_data: `strm_gen_${platform}_TR` },
+                    { text: '🇺🇸 US', callback_data: `strm_gen_${platform}_US` }
+                ],
+                [{ text: '⚡ Auto (အကောင်းဆုံးရွေးမည်)', callback_data: `strm_gen_${platform}_AUTO` }]
+            ]
+            : [
+                [{ text: '🌍 GLOBAL / Auto', callback_data: `strm_gen_${platform}_AUTO` }]
+            ];
+
+        regionButtons.push([{ text: '🔙 နောက်သို့', callback_data: 'strm_cancel' }]);
+
+        return ctx.editMessageText(
+            `🌍 *${platform.toUpperCase()}* အတွက် လိုချင်သော Region (နိုင်ငံ) ကို ရွေးချယ်ပါ-`,
+            {
+                parse_mode: 'Markdown',
+                reply_markup: { inline_keyboard: regionButtons }
+            }
+        );
+    }
+
+    if (data.startsWith('strm_gen_')) {
+        const parts = data.split('_');
+        const platform = parts[2];
+        const region = parts[3];
+
+        await ctx.answerCbQuery('အကောင့်ထုတ်ယူနေပါသည်...');
+        await ctx.editMessageText(
+            `⏳ *${platform.toUpperCase()} (${region})* အကောင့် ထုတ်ယူနေပါသည်၊ ခဏစောင့်ပါ...`,
+            { parse_mode: 'Markdown' }
+        );
+
+        const result = await generateStreamingAccount(platform, region);
+
+        if (result && result.success && result.data) {
+            const acc = result.data;
+            const bill = result.billing || {};
+
+            let successMsg =
+                `🎉 *${acc.platform.toUpperCase()} အကောင့် ရရှိပါပြီ!*\n\n` +
+                `🆔 *Account ID:* \`${acc.account_id}\`\n` +
+                `🌍 *Region:* \`${acc.region}\`\n` +
+                `🔗 *Login URL:* ${acc.login_url}\n\n` +
+                `✨ *VIP Direct Link:*\n\`${acc.vip_link}\`\n\n`;
+
+            if (acc.nftoken) {
+                successMsg += `🔑 *NFToken:*\n\`${acc.nftoken}\`\n\n`;
+            }
+
+            successMsg +=
+                `📖 *အသုံးပြုပုံ:* ${acc.instructions}\n` +
+                `──────────────────\n` +
+                `💳 *သုံးစွဲမှု:* ${bill.type_used || '-'} | *လက်ကျန် Quota:* \`${bill.remaining_quota ?? '-'}\` | *Credits:* \`${bill.remaining_credits ?? '-'}\``;
+
+            return ctx.editMessageText(successMsg, {
+                parse_mode: 'Markdown',
+                disable_web_page_preview: true
+            });
+        } else {
+            return ctx.editMessageText(
+                `❌ *အကောင့်ထုတ်ယူမှု မအောင်မြင်ပါ*\n` +
+                `အကြောင်းအရင်း: ${result?.message || 'Stock ကုန်နေသည် သို့မဟုတ် API Key မှားယွင်းနေပါသည်'}\n` +
+                `*(မှတ်ချက် - မအောင်မြင်သည့်အတွက် သင်၏ Quota/Credit လုံးဝ မဖြတ်ပါ)*`,
+                { parse_mode: 'Markdown' }
+            );
+        }
+    }
+});
 
 // Tracking otomatis setiap pengguna yang berinteraksi dengan bot
 bot.use(async (ctx, next) => {
@@ -3728,192 +3914,6 @@ bot.on('text', async (ctx) => {
         `Ketik /start untuk membuka kontrol layanan aktivasi lisensi.`,
         { parse_mode: 'Markdown', ...getMainKeyboard(userId) }
     );
-});
-// ==========================================
-// 🎬 STREAMING RESELLER BOT FLOW (TELEGRAF)
-// ==========================================
-
-// ၁။ /stock - လက်ကျန် Stock စစ်ဆေးခြင်း
-bot.command('stock', async (ctx) => {
-    const waitMsg = await ctx.reply('⏳ လက်ကျန် Stock စာရင်းကို စစ်ဆေးနေပါသည်...');
-    const res = await checkStreamingStock();
-
-    if (!res || !res.success || !res.data) {
-        return ctx.telegram.editMessageText(
-            ctx.chat.id,
-            waitMsg.message_id,
-            undefined,
-            `❌ Stock စစ်ဆေး၍မရပါ: ${res?.message || 'Server Error'}`
-        );
-    }
-
-    let text = '📦 *လက်ရှိ ရရှိနိုင်သော Streaming Stock စာရင်း*\n\n';
-    for (const [platform, info] of Object.entries(res.data)) {
-        text += `🔹 *${platform.toUpperCase()}* — စုစုပေါင်း: \`${info.total_active}\` ခု\n`;
-        if (info.by_region) {
-            const regions = Object.entries(info.by_region)
-                .map(([reg, count]) => `${reg}:${count}`)
-                .join(' | ');
-            text += `   └ 🌍 Region: ${regions}\n`;
-        }
-        text += '\n';
-    }
-
-    return ctx.telegram.editMessageText(ctx.chat.id, waitMsg.message_id, undefined, text, {
-        parse_mode: 'Markdown'
-    });
-});
-
-// ၂။ /apiprofile - Owner သီးသန့် Quota နှင့် Credit စစ်ဆေးခြင်း
-bot.command('apiprofile', async (ctx) => {
-    if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ ဤ Command ကို Owner သာ အသုံးပြုနိုင်ပါသည်။');
-    }
-
-    const res = await checkResellerProfile();
-    if (!res || !res.success) {
-        return ctx.reply(`❌ Profile စစ်ဆေး၍မရပါ: ${res?.message || 'Error'}`);
-    }
-
-    const d = res.data;
-    const profileText =
-        `👤 *Reseller API Profile*\n\n` +
-        `• *Username:* \`${d.username}\`\n` +
-        `• *Plan:* ${d.plan_name} (${d.membership_active ? '✅ Active' : '❌ Expired'})\n` +
-        `• *Expiry:* \`${d.membership_expiry}\`\n` +
-        `• *ယနေ့ကျန်ရှိသော Quota:* \`${d.quota_remaining_today} / ${d.quota_limit}\`\n` +
-        `• *လက်ကျန် Credits:* \`${d.credits}\``;
-
-    return ctx.reply(profileText, { parse_mode: 'Markdown' });
-});
-
-// ၃။ /gen သို့မဟုတ် /streaming - အကောင့်ထုတ်ယူရန် မီနူး
-bot.command(['gen', 'streaming'], async (ctx) => {
-    if (!isOwner(ctx.from.id)) {
-        return ctx.reply('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။');
-    }
-
-    return ctx.reply('🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*', {
-        parse_mode: 'Markdown',
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    { text: '🔴 Netflix', callback_data: 'strm_plat_netflix' },
-                    { text: '🔵 Prime Video', callback_data: 'strm_plat_prime' }
-                ],
-                [
-                    { text: '🟣 HBO Max', callback_data: 'strm_plat_hbo' },
-                    { text: '🟠 Crunchyroll', callback_data: 'strm_plat_crunchyroll' }
-                ],
-                [
-                    { text: '🟢 ChatGPT Plus/Pro', callback_data: 'strm_plat_chatgpt' }
-                ],
-                [
-                    { text: '📦 Check Stock', callback_data: 'strm_check_stock' },
-                    { text: '❌ ပိတ်မည်', callback_data: 'strm_cancel' }
-                ]
-            ]
-        }
-    });
-});
-
-// ၄။ ခလုတ်နှိပ်မှုများကို ဖမ်းယူခြင်း
-bot.action(/^strm_/, async (ctx) => {
-    const data = ctx.callbackQuery.data;
-
-    if (data === 'strm_cancel') {
-        await ctx.answerCbQuery('ပိတ်လိုက်ပါပြီ');
-        return ctx.deleteMessage().catch(() => {});
-    }
-
-    if (data === 'strm_check_stock') {
-        await ctx.answerCbQuery();
-        const res = await checkStreamingStock();
-        if (!res || !res.success) {
-            return ctx.reply(`❌ Error: ${res?.message}`);
-        }
-        let text = '📦 *လက်ကျန် Stock စာရင်း*\n\n';
-        for (const [plat, info] of Object.entries(res.data)) {
-            text += `• *${plat.toUpperCase()}*: \`${info.total_active}\` ခု\n`;
-        }
-        return ctx.reply(text, { parse_mode: 'Markdown' });
-    }
-
-    if (data.startsWith('strm_plat_')) {
-        const platform = data.replace('strm_plat_', '');
-        await ctx.answerCbQuery();
-
-        const regionButtons = platform === 'netflix'
-            ? [
-                [
-                    { text: '🇸🇬 SG', callback_data: `strm_gen_${platform}_SG` },
-                    { text: '🇮🇩 ID', callback_data: `strm_gen_${platform}_ID` },
-                    { text: '🇹🇷 TR', callback_data: `strm_gen_${platform}_TR` },
-                    { text: '🇺🇸 US', callback_data: `strm_gen_${platform}_US` }
-                ],
-                [{ text: '⚡ Auto (အကောင်းဆုံးရွေးမည်)', callback_data: `strm_gen_${platform}_AUTO` }]
-            ]
-            : [
-                [{ text: '🌍 GLOBAL / Auto', callback_data: `strm_gen_${platform}_AUTO` }]
-            ];
-
-        regionButtons.push([{ text: '🔙 နောက်သို့', callback_data: 'strm_cancel' }]);
-
-        return ctx.editMessageText(
-            `🌍 *${platform.toUpperCase()}* အတွက် လိုချင်သော Region (နိုင်ငံ) ကို ရွေးချယ်ပါ-`,
-            {
-                parse_mode: 'Markdown',
-                reply_markup: { inline_keyboard: regionButtons }
-            }
-        );
-    }
-
-    if (data.startsWith('strm_gen_')) {
-        const parts = data.split('_');
-        const platform = parts[2];
-        const region = parts[3];
-
-        await ctx.answerCbQuery('အကောင့်ထုတ်ယူနေပါသည်...');
-        await ctx.editMessageText(
-            `⏳ *${platform.toUpperCase()} (${region})* အကောင့် ထုတ်ယူနေပါသည်၊ ခဏစောင့်ပါ...`,
-            { parse_mode: 'Markdown' }
-        );
-
-        const result = await generateStreamingAccount(platform, region);
-
-        if (result && result.success && result.data) {
-            const acc = result.data;
-            const bill = result.billing || {};
-
-            let successMsg =
-                `🎉 *${acc.platform.toUpperCase()} အကောင့် ရရှိပါပြီ!*\n\n` +
-                `🆔 *Account ID:* \`${acc.account_id}\`\n` +
-                `🌍 *Region:* \`${acc.region}\`\n` +
-                `🔗 *Login URL:* ${acc.login_url}\n\n` +
-                `✨ *VIP Direct Link:*\n\`${acc.vip_link}\`\n\n`;
-
-            if (acc.nftoken) {
-                successMsg += `🔑 *NFToken:*\n\`${acc.nftoken}\`\n\n`;
-            }
-
-            successMsg +=
-                `📖 *အသုံးပြုပုံ:* ${acc.instructions}\n` +
-                `──────────────────\n` +
-                `💳 *သုံးစွဲမှု:* ${bill.type_used || '-'} | *လက်ကျန် Quota:* \`${bill.remaining_quota ?? '-'}\` | *Credits:* \`${bill.remaining_credits ?? '-'}\``;
-
-            return ctx.editMessageText(successMsg, {
-                parse_mode: 'Markdown',
-                disable_web_page_preview: true
-            });
-        } else {
-            return ctx.editMessageText(
-                `❌ *အကောင့်ထုတ်ယူမှု မအောင်မြင်ပါ*\n` +
-                `အကြောင်းအရင်း: ${result?.message || 'Stock ကုန်နေသည် သို့မဟုတ် API Key မှားယွင်းနေပါသည်'}\n` +
-                `*(မှတ်ချက် - မအောင်မြင်သည့်အတွက် သင်၏ Quota/Credit လုံးဝ မဖြတ်ပါ)*`,
-                { parse_mode: 'Markdown' }
-            );
-        }
-    }
 });
 
 // Tangani error global Telegraf agar bot tetap stabil
