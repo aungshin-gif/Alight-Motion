@@ -341,6 +341,15 @@ bot.command(['gen', 'streaming'], async (ctx) => {
 });
 
 // ၄။ ခလုတ်နှိပ်မှုများကို ဖမ်းယူခြင်း
+// The /stock reply shape isn't documented; try common count fields and fall back to raw JSON so the real shape is visible
+function stockCount(info) {
+    if (typeof info === 'number' || typeof info === 'string') return info;
+    for (const k of ['total_active', 'total', 'stock', 'available', 'count', 'active']) {
+        if (info && info[k] !== undefined) return info[k];
+    }
+    return JSON.stringify(info).slice(0, 80);
+}
+
 let strmGenerating = false;
 bot.action(/^strm_/, async (ctx) => {
     const data = ctx.callbackQuery.data;
@@ -366,7 +375,7 @@ bot.action(/^strm_/, async (ctx) => {
         let text = '🔎 *Auto Stock (NF / HB / PR)*\n\n';
         for (const [label, key] of wanted) {
             const entry = Object.entries(res.data).find(([plat]) => plat.toLowerCase().includes(key));
-            text += `• *${label}*: \`${entry ? entry[1].total_active : 0}\` ခု\n`;
+            text += `• *${label}*: \`${entry ? stockCount(entry[1]) : 0}\` ခု\n`;
         }
         return ctx.reply(text, { parse_mode: 'Markdown' });
     }
@@ -379,7 +388,7 @@ bot.action(/^strm_/, async (ctx) => {
         }
         let text = '📦 *လက်ကျန် Stock စာရင်း*\n\n';
         for (const [plat, info] of Object.entries(res.data)) {
-            text += `• *${plat.toUpperCase()}*: \`${info.total_active}\` ခု\n`;
+            text += `• *${plat.toUpperCase()}*: \`${stockCount(info)}\` ခု\n`;
         }
         return ctx.reply(text, { parse_mode: 'Markdown' });
     }
