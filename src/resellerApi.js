@@ -1,5 +1,5 @@
 // src/resellerApi.js
-const BASE_URL = (process.env.RESELLER_BASE_URL || 'https://api.duniakonter.com').replace(/\/+$/, '');
+const BASE_URL = (process.env.RESELLER_BASE_URL || 'https://api.duniakonter.store').replace(/\/+$/, '');
 const API_KEY = process.env.RESELLER_API_KEY || '';
 const SECRET_KEY = process.env.RESELLER_SECRET_KEY || '';
 

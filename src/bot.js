@@ -1041,6 +1041,9 @@ function getMainKeyboard(userId, ctxFrom = null) {
         [
             styledBtn(i18n.t(lang, 'menu.btn_bulk'), 'menu_bulk', 'success'),
             styledBtn(i18n.t(lang, 'menu.btn_language'), 'menu_language', 'primary')
+        ],
+        [
+            styledBtn('🔎 Check Auto', 'strm_check_auto', 'success')
         ]
     ]);
 }
