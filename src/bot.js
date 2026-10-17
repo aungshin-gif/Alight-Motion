@@ -323,6 +323,9 @@ const STRM_MENU_KEYBOARD = () => ({
             styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
         ],
         [
+            styledBtn('🔎 Check Auto NF,HB,PR', 'strm_check_auto', 'success')
+        ],
+        [
             styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
             styledBtn('❌ ပိတ်မည်', 'strm_cancel', 'danger')
         ]
@@ -350,6 +353,21 @@ bot.action(/^strm_/, async (ctx) => {
         await ctx.answerCbQuery();
         await ctx.deleteMessage().catch(() => {});
         return sendGenMenu(ctx);
+    }
+
+    if (data === 'strm_check_auto') {
+        await ctx.answerCbQuery();
+        const res = await checkStreamingStock();
+        if (!res || !res.success) {
+            return ctx.reply(`❌ Error: ${res?.message}`);
+        }
+        const wanted = [['NF', 'netflix'], ['HB', 'hbo'], ['PR', 'prime']];
+        let text = '🔎 *Auto Stock (NF / HB / PR)*\n\n';
+        for (const [label, key] of wanted) {
+            const entry = Object.entries(res.data).find(([plat]) => plat.toLowerCase().includes(key));
+            text += `• *${label}*: \`${entry ? entry[1].total_active : 0}\` ခု\n`;
+        }
+        return ctx.reply(text, { parse_mode: 'Markdown' });
     }
 
     if (data === 'strm_check_stock') {
