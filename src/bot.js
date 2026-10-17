@@ -283,32 +283,35 @@ bot.command('apiprofile', async (ctx) => {
 });
 
 // ၃။ /gen သို့မဟုတ် /streaming - အကောင့်ထုတ်ယူရန် မီနူး
+const STRM_MENU_TEXT = '🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*';
+const STRM_MENU_KEYBOARD = () => ({
+    inline_keyboard: [
+        [
+            styledBtn('🔴 Netflix', 'strm_plat_netflix', 'danger'),
+            styledBtn('🔵 Prime Video', 'strm_plat_prime', 'primary')
+        ],
+        [
+            styledBtn('🟣 HBO Max', 'strm_plat_hbo', 'success'),
+            styledBtn('🟠 Crunchyroll', 'strm_plat_crunchyroll', 'success')
+        ],
+        [
+            styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
+        ],
+        [
+            styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
+            styledBtn('❌ ပိတ်မည်', 'strm_cancel', 'danger')
+        ]
+    ]
+});
+
 bot.command(['gen', 'streaming'], async (ctx) => {
     if (!isOwner(ctx.from.id)) {
         return ctx.reply('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။');
     }
 
-    return ctx.reply('🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*', {
+    return ctx.reply(STRM_MENU_TEXT, {
         parse_mode: 'Markdown',
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    styledBtn('🔴 Netflix', 'strm_plat_netflix', 'danger'),
-                    styledBtn('🔵 Prime Video', 'strm_plat_prime', 'primary')
-                ],
-                [
-                    styledBtn('🟣 HBO Max', 'strm_plat_hbo', 'success'),
-                    styledBtn('🟠 Crunchyroll', 'strm_plat_crunchyroll', 'success')
-                ],
-                [
-                    styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
-                ],
-                [
-                    styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
-                    styledBtn('❌ ပိတ်မည်', 'strm_cancel', 'danger')
-                ]
-            ]
-        }
+        reply_markup: STRM_MENU_KEYBOARD()
     });
 });
 
@@ -319,6 +322,14 @@ bot.action(/^strm_/, async (ctx) => {
     if (data === 'strm_cancel') {
         await ctx.answerCbQuery('ပိတ်လိုက်ပါပြီ');
         return ctx.deleteMessage().catch(() => {});
+    }
+
+    if (data === 'strm_back') {
+        await ctx.answerCbQuery();
+        return ctx.editMessageText(STRM_MENU_TEXT, {
+            parse_mode: 'Markdown',
+            reply_markup: STRM_MENU_KEYBOARD()
+        });
     }
 
     if (data === 'strm_check_stock') {
@@ -341,18 +352,18 @@ bot.action(/^strm_/, async (ctx) => {
         const regionButtons = platform === 'netflix'
             ? [
                 [
-                    { text: '🇸🇬 SG', callback_data: `strm_gen_${platform}_SG` },
-                    { text: '🇮🇩 ID', callback_data: `strm_gen_${platform}_ID` },
-                    { text: '🇹🇷 TR', callback_data: `strm_gen_${platform}_TR` },
-                    { text: '🇺🇸 US', callback_data: `strm_gen_${platform}_US` }
+                    styledBtn('🇸🇬 SG', `strm_gen_${platform}_SG`, 'primary'),
+                    styledBtn('🇮🇩 ID', `strm_gen_${platform}_ID`, 'primary'),
+                    styledBtn('🇹🇷 TR', `strm_gen_${platform}_TR`, 'primary'),
+                    styledBtn('🇺🇸 US', `strm_gen_${platform}_US`, 'primary')
                 ],
-                [{ text: '⚡ Auto (အကောင်းဆုံးရွေးမည်)', callback_data: `strm_gen_${platform}_AUTO` }]
+                [styledBtn('⚡ Auto (အကောင်းဆုံးရွေးမည်)', `strm_gen_${platform}_AUTO`, 'success')]
             ]
             : [
-                [{ text: '🌍 GLOBAL / Auto', callback_data: `strm_gen_${platform}_AUTO` }]
+                [styledBtn('🌍 GLOBAL / Auto', `strm_gen_${platform}_AUTO`, 'success')]
             ];
 
-        regionButtons.push([{ text: '🔙 နောက်သို့', callback_data: 'strm_cancel' }]);
+        regionButtons.push([styledBtn('🔙 နောက်သို့', 'strm_back', 'danger')]);
 
         return ctx.editMessageText(
             `🌍 *${platform.toUpperCase()}* အတွက် လိုချင်သော Region (နိုင်ငံ) ကို ရွေးချယ်ပါ-`,
