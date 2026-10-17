@@ -3,6 +3,14 @@ const BASE_URL = (process.env.RESELLER_BASE_URL || 'https://api.duniakonter.com'
 const API_KEY = process.env.RESELLER_API_KEY || '';
 const SECRET_KEY = process.env.RESELLER_SECRET_KEY || '';
 
+// Node's fetch only says "fetch failed"; the real reason (DNS, refused, TLS, timeout) is in error.cause
+function describeError(error) {
+    const code = error.cause?.code || error.cause?.message;
+    return code
+        ? `${error.message} (${code}) → ${BASE_URL}`
+        : `${error.message} → ${BASE_URL}`;
+}
+
 const getHeaders = () => ({
     'Content-Type': 'application/json',
     'X-API-Key': API_KEY,
@@ -22,7 +30,7 @@ async function generateStreamingAccount(platform = 'netflix', region = null) {
         });
         return await res.json();
     } catch (error) {
-        return { success: false, message: error.message };
+        return { success: false, message: describeError(error) };
     }
 }
 
@@ -34,7 +42,7 @@ async function checkResellerProfile() {
         });
         return await res.json();
     } catch (error) {
-        return { success: false, message: error.message };
+        return { success: false, message: describeError(error) };
     }
 }
 
@@ -45,7 +53,7 @@ async function checkStreamingStock() {
         });
         return await res.json();
     } catch (error) {
-        return { success: false, message: error.message };
+        return { success: false, message: describeError(error) };
     }
 }
 
