@@ -293,19 +293,19 @@ bot.command(['gen', 'streaming'], async (ctx) => {
         reply_markup: {
             inline_keyboard: [
                 [
-                    { text: '🔴 Netflix', callback_data: 'strm_plat_netflix' },
-                    { text: '🔵 Prime Video', callback_data: 'strm_plat_prime' }
+                    styledBtn('🔴 Netflix', 'strm_plat_netflix', 'danger'),
+                    styledBtn('🔵 Prime Video', 'strm_plat_prime', 'primary')
                 ],
                 [
-                    { text: '🟣 HBO Max', callback_data: 'strm_plat_hbo' },
-                    { text: '🟠 Crunchyroll', callback_data: 'strm_plat_crunchyroll' }
+                    styledBtn('🟣 HBO Max', 'strm_plat_hbo', 'success'),
+                    styledBtn('🟠 Crunchyroll', 'strm_plat_crunchyroll', 'success')
                 ],
                 [
-                    { text: '🟢 ChatGPT Plus/Pro', callback_data: 'strm_plat_chatgpt' }
+                    styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
                 ],
                 [
-                    { text: '📦 Check Stock', callback_data: 'strm_check_stock' },
-                    { text: '❌ ပိတ်မည်', callback_data: 'strm_cancel' }
+                    styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
+                    styledBtn('❌ ပိတ်မည်', 'strm_cancel', 'danger')
                 ]
             ]
         }
