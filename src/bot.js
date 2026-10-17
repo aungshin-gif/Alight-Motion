@@ -323,7 +323,7 @@ const STRM_MENU_KEYBOARD = () => ({
             styledBtn('🟢 ChatGPT Plus/Pro', 'strm_plat_chatgpt', 'success')
         ],
         [
-            styledBtn('🔎 Check Auto NF,HB,PR', 'strm_check_auto', 'success')
+            styledBtn('🔎 Check Auto', 'strm_check_auto', 'success')
         ],
         [
             styledBtn('📦 Check Stock', 'strm_check_stock', 'primary'),
