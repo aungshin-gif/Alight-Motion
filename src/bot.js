@@ -341,6 +341,7 @@ bot.command(['gen', 'streaming'], async (ctx) => {
 });
 
 // ၄။ ခလုတ်နှိပ်မှုများကို ဖမ်းယူခြင်း
+let strmGenerating = false;
 bot.action(/^strm_/, async (ctx) => {
     const data = ctx.callbackQuery.data;
 
@@ -415,6 +416,12 @@ bot.action(/^strm_/, async (ctx) => {
         const platform = parts[2];
         const region = parts[3];
 
+        // One generation at a time: the reseller account is shared, so a second request while one is pending gets rejected
+        if (strmGenerating) {
+            return ctx.answerCbQuery('⏳ ယခင်အကောင့် ထုတ်ယူနေဆဲဖြစ်ပါသည်၊ ခဏစောင့်ပါ...', { show_alert: true });
+        }
+        strmGenerating = true;
+        try {
         await ctx.answerCbQuery('အကောင့်ထုတ်ယူနေပါသည်...');
         const progressText = `⏳ *${platform.toUpperCase()} (${region})* အကောင့် ထုတ်ယူနေပါသည်၊ ခဏစောင့်ပါ...`;
         let msgId = ctx.callbackQuery.message.message_id;
@@ -459,6 +466,9 @@ bot.action(/^strm_/, async (ctx) => {
                 `*(မှတ်ချက် - မအောင်မြင်သည့်အတွက် သင်၏ Quota/Credit လုံးဝ မဖြတ်ပါ)*`,
                 { parse_mode: 'Markdown' }
             );
+        }
+        } finally {
+            strmGenerating = false;
         }
     }
 });
