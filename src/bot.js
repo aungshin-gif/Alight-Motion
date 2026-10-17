@@ -786,17 +786,8 @@ function styledUrlBtn(text, url, style) {
     return { ...Markup.button.url(text, url), style };
 }
 
-// Efek perayaan 🎉 (confetti) setelah akun berhasil dibuat. Tidak pernah mengganggu alur utama.
+// Efek perayaan 🎉 (confetti) pada pesan sukses pembuatan akun.
 const PARTY_EFFECT_ID = '5046509860389126442';
-async function sendCelebration(telegram, chatId) {
-    try {
-        try {
-            await telegram.sendMessage(chatId, '🎉', { message_effect_id: PARTY_EFFECT_ID });
-        } catch {
-            await telegram.sendMessage(chatId, '🎉');
-        }
-    } catch { }
-}
 
 // -------------------------------------------------------------
 // Keyboard Menu Utama (Publik - Grid 2x2 Kompak & Rapi)
@@ -2192,7 +2183,22 @@ bot.action('menu_single', async (ctx) => {
             ]
         ]);
 
-        if (targetMsgId) {
+        let sentWithEffect = false;
+        try {
+            await ctx.telegram.sendMessage(ctx.chat.id, successText, {
+                parse_mode: 'Markdown',
+                ...keyboard,
+                message_effect_id: PARTY_EFFECT_ID
+            });
+            sentWithEffect = true;
+            if (targetMsgId) {
+                await ctx.telegram.deleteMessage(ctx.chat.id, targetMsgId).catch(() => { });
+            }
+        } catch { }
+
+        if (sentWithEffect) {
+            // Pesan sukses sudah terkirim dengan efek perayaan
+        } else if (targetMsgId) {
             await ctx.telegram.editMessageText(ctx.chat.id, targetMsgId, null, successText, {
                 parse_mode: 'Markdown',
                 ...keyboard
@@ -2208,7 +2214,6 @@ bot.action('menu_single', async (ctx) => {
 
         // Kirim notifikasi bukti aktivasi ke Channel Telegram (Live)
         sendChannelNotification('SINGLE', { email, user: ctx.from });
-        sendCelebration(ctx.telegram, ctx.chat.id);
     } catch (err) {
         handleAutoMaintenanceTrigger(err.message, 'AKUN SATUAN');
         logInfo('INSTAN', `❌ GAGAL User ${userId}: ${err.message}`);
@@ -2957,15 +2962,20 @@ async function startBulkJob(jobData) {
                 ]
             ]);
 
+            const docExtra = {
+                caption: doneText,
+                parse_mode: 'Markdown',
+                ...resultKb
+            };
             await telegram.sendDocument(
                 chatId,
                 { source: buffer, filename: fileName },
-                {
-                    caption: doneText,
-                    parse_mode: 'Markdown',
-                    ...resultKb
-                }
-            ).catch(async (docErr) => {
+                { ...docExtra, message_effect_id: PARTY_EFFECT_ID }
+            ).catch(() => telegram.sendDocument(
+                chatId,
+                { source: buffer, filename: fileName },
+                docExtra
+            )).catch(async (docErr) => {
                 console.error('[Bulk] Gagal sendDocument, mencoba sendMessage:', docErr.message);
                 await telegram.sendMessage(chatId, doneText, { parse_mode: 'Markdown', ...resultKb });
             });
@@ -2974,7 +2984,6 @@ async function startBulkJob(jobData) {
 
             // Kirim notifikasi pesanan masal ke Channel Telegram (Live)
             sendChannelNotification('BULK', { count: successCount, orderId: rangeOrderId, user: user || ctx?.from || currentJob?.user });
-            sendCelebration(telegram, chatId);
         } else {
             logInfo('BULK', `❌ GAGAL | Tidak ada akun yang berhasil dibuat untuk user ${userId}`);
             const errorText = `❌ *Tidak Ada Akun yang Berhasil*\n────────────\nTerjadi kendala saat memproses pesanan masal. Silakan coba lagi beberapa saat lagi.`;
@@ -3661,15 +3670,20 @@ bot.on('text', async (ctx) => {
                 ]
             ];
 
-            await ctx.telegram.editMessageText(ctx.chat.id, waitMsg.message_id, null, successText, {
+            const successExtra = {
                 parse_mode: 'Markdown',
                 ...Markup.inlineKeyboard(keyboardButtons)
-            });
+            };
+            try {
+                await ctx.telegram.sendMessage(ctx.chat.id, successText, { ...successExtra, message_effect_id: PARTY_EFFECT_ID });
+                await ctx.telegram.deleteMessage(ctx.chat.id, waitMsg.message_id).catch(() => { });
+            } catch {
+                await ctx.telegram.editMessageText(ctx.chat.id, waitMsg.message_id, null, successText, successExtra);
+            }
 
             // Kirim notifikasi upgrade email ke Channel Telegram (Live)
             logInfo('UPGRADE', `✅ SUKSES | ${email} Aktif 1 Tahun`);
             sendChannelNotification('CUSTOM_EMAIL', { email, user: ctx.from });
-            sendCelebration(ctx.telegram, ctx.chat.id);
         } catch (err) {
             await ctx.telegram.editMessageText(
                 ctx.chat.id,
