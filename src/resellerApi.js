@@ -37,7 +37,8 @@ async function generateStreamingAccount(platform = 'netflix', region = null) {
         const res = await fetch(`${BASE_URL}/api/v1/generate`, {
             method: 'POST',
             headers: getHeaders(),
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
+            signal: AbortSignal.timeout(90000)
         });
         return await parseResponse(res);
     } catch (error) {

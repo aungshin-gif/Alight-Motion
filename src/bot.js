@@ -25,6 +25,7 @@ if (CHANNEL_ID && /^\d+$/.test(String(CHANNEL_ID))) {
     CHANNEL_ID = `-${CHANNEL_ID}`;
 }
 let forceSubEnabled = true;
+let checkAutoEnabled = true; // Check Auto (/gen flow) on/off switch, toggled from the admin panel
 let isQueueOpen = true;
 
 function isOwner(userId) {
@@ -330,6 +331,9 @@ const STRM_MENU_KEYBOARD = () => ({
 });
 
 bot.command(['gen', 'streaming'], async (ctx) => {
+    if (!checkAutoEnabled) {
+        return ctx.reply('⛔ Check Auto is currently disabled by admin.');
+    }
     if (!isOwner(ctx.from.id)) {
         return ctx.reply('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။');
     }
@@ -350,6 +354,10 @@ function stockCount(info) {
 let strmGenerating = false;
 bot.action(/^strm_/, async (ctx) => {
     const data = ctx.callbackQuery.data;
+
+    if (!checkAutoEnabled && data !== 'strm_cancel') {
+        return ctx.answerCbQuery('⛔ Check Auto is currently disabled by admin.', { show_alert: true });
+    }
 
     if (data === 'strm_cancel') {
         await ctx.answerCbQuery('ပိတ်လိုက်ပါပြီ');
@@ -433,7 +441,9 @@ bot.action(/^strm_/, async (ctx) => {
         }
         const editResult = (text, extra) => ctx.telegram.editMessageText(ctx.chat.id, msgId, undefined, text, extra);
 
+        const startedAt = Date.now();
         const result = await generateStreamingAccount(platform, region);
+        console.log(`[GEN] ${platform}/${region} took ${Date.now() - startedAt}ms → ${result?.success ? 'OK' : result?.message}`);
 
         if (result && result.success && result.data) {
             const acc = result.data;
@@ -1043,10 +1053,9 @@ const PARTY_EFFECT_ID = '5046509860389126442';
 // -------------------------------------------------------------
 function getMainKeyboard(userId, ctxFrom = null) {
     const lang = getUserLang(userId, ctxFrom);
+    const checkAutoRow = checkAutoEnabled ? [[styledBtn('🔎 Check Auto', 'strm_open', 'success')]] : [];
     return Markup.inlineKeyboard([
-        [
-            styledBtn('🔎 Check Auto', 'strm_open', 'success')
-        ],
+        ...checkAutoRow,
         [
             styledBtn(i18n.t(lang, 'menu.btn_single'), 'menu_single', 'primary'),
             styledBtn(i18n.t(lang, 'menu.btn_custom'), 'menu_custom_email', 'success')
@@ -1374,12 +1383,15 @@ function getOwnerCatPemasaranText() {
         `Current store promotion and channel summary:\n\n` +
         `• Total Store Users    : *${totalUsers}* Users\n` +
         `• Required Channel    : ${channelStatus}\n` +
+        `• Check Auto          : ${checkAutoEnabled ? 'Enabled ✅' : 'Disabled ⛔'}\n` +
         `────────────\n` +
         `Please choose a marketing feature below:`;
 }
 
 function getOwnerCatPemasaranKeyboard() {
+    const checkAutoBtn = checkAutoEnabled ? '⛔ Disable Check Auto' : '✅ Enable Check Auto';
     return Markup.inlineKeyboard([
+        [Markup.button.callback(checkAutoBtn, 'owner_toggle_checkauto')],
         [Markup.button.callback('📢 Send Broadcast Message', 'owner_broadcast')],
         [Markup.button.callback('⚙️ Channel Requirement Settings', 'owner_channel_settings')],
         [Markup.button.callback('👥 Customer Data & Stats', 'owner_user_stats')],
@@ -1994,6 +2006,17 @@ bot.action('owner_toggle_queue', async (ctx) => {
     const text = getOwnerCatTransaksiText();
     try {
         await ctx.editMessageText(text, { parse_mode: 'Markdown', ...getOwnerCatTransaksiKeyboard() });
+    } catch { }
+});
+
+bot.action('owner_toggle_checkauto', async (ctx) => {
+    if (!isAdmin(ctx.from.id)) {
+        return ctx.answerCbQuery('⛔ Owner / Admin only.', { show_alert: true }).catch(() => { });
+    }
+    checkAutoEnabled = !checkAutoEnabled;
+    await ctx.answerCbQuery(checkAutoEnabled ? '✅ Check Auto ENABLED' : '⛔ Check Auto DISABLED', { show_alert: true }).catch(() => { });
+    try {
+        await ctx.editMessageText(getOwnerCatPemasaranText(), { parse_mode: 'Markdown', ...getOwnerCatPemasaranKeyboard() });
     } catch { }
 });
 
