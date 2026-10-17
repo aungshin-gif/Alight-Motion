@@ -11,6 +11,17 @@ function describeError(error) {
         : `${error.message} → ${BASE_URL}`;
 }
 
+// Reads the body as text first so a non-JSON reply (e.g. "404 page not found") shows HTTP status + body instead of a JSON parse error
+async function parseResponse(res) {
+    const text = await res.text();
+    try {
+        return JSON.parse(text);
+    } catch {
+        const snippet = text.replace(/\s+/g, ' ').trim().slice(0, 120);
+        return { success: false, message: `HTTP ${res.status} ${res.url} → ${snippet || '(empty)'}` };
+    }
+}
+
 const getHeaders = () => ({
     'Content-Type': 'application/json',
     'X-API-Key': API_KEY,
@@ -28,7 +39,7 @@ async function generateStreamingAccount(platform = 'netflix', region = null) {
             headers: getHeaders(),
             body: JSON.stringify(body)
         });
-        return await res.json();
+        return await parseResponse(res);
     } catch (error) {
         return { success: false, message: describeError(error) };
     }
@@ -40,7 +51,7 @@ async function checkResellerProfile() {
             method: 'GET',
             headers: getHeaders()
         });
-        return await res.json();
+        return await parseResponse(res);
     } catch (error) {
         return { success: false, message: describeError(error) };
     }
@@ -51,7 +62,7 @@ async function checkStreamingStock() {
         const res = await fetch(`${BASE_URL}/api/v1/stock`, {
             method: 'GET'
         });
-        return await res.json();
+        return await parseResponse(res);
     } catch (error) {
         return { success: false, message: describeError(error) };
     }
