@@ -283,7 +283,32 @@ bot.command('apiprofile', async (ctx) => {
 });
 
 // ၃။ /gen သို့မဟုတ် /streaming - အကောင့်ထုတ်ယူရန် မီနူး
-const STRM_MENU_TEXT = '🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*';
+const STRM_MENU_TEXT = '❤️ *Welcome!*\n🎬 *ထုတ်ယူလိုသော Streaming Platform ကို ရွေးချယ်ပါ-*';
+const GEN_PHOTO_PATH = path.join(__dirname, '..', 'assets', 'gen.jpg');
+const GEN_HEART_EFFECT_ID = '5159385139981059251'; // ❤️ message effect (private chats only)
+let genPhotoFileId = null;
+
+// Menu photo + heart animation; falls back to plain text if the photo/effect fails
+async function sendGenMenu(ctx) {
+    const extra = { caption: STRM_MENU_TEXT, parse_mode: 'Markdown', reply_markup: STRM_MENU_KEYBOARD() };
+    const photo = genPhotoFileId || { source: GEN_PHOTO_PATH };
+    try {
+        let sent;
+        try {
+            sent = await ctx.replyWithPhoto(photo, { ...extra, message_effect_id: GEN_HEART_EFFECT_ID });
+        } catch {
+            sent = await ctx.replyWithPhoto(photo, extra);
+        }
+        if (!genPhotoFileId && sent?.photo?.length) {
+            genPhotoFileId = sent.photo[sent.photo.length - 1].file_id;
+        }
+        return sent;
+    } catch {
+        genPhotoFileId = null;
+        return ctx.reply(STRM_MENU_TEXT, { parse_mode: 'Markdown', reply_markup: STRM_MENU_KEYBOARD() });
+    }
+}
+
 const STRM_MENU_KEYBOARD = () => ({
     inline_keyboard: [
         [
@@ -309,10 +334,7 @@ bot.command(['gen', 'streaming'], async (ctx) => {
         return ctx.reply('⛔ အကောင့်ထုတ်ယူခွင့် မရှိပါ။ Admin ထံ ဆက်သွယ်ပါ။');
     }
 
-    return ctx.reply(STRM_MENU_TEXT, {
-        parse_mode: 'Markdown',
-        reply_markup: STRM_MENU_KEYBOARD()
-    });
+    return sendGenMenu(ctx);
 });
 
 // ၄။ ခလုတ်နှိပ်မှုများကို ဖမ်းယူခြင်း
@@ -326,10 +348,8 @@ bot.action(/^strm_/, async (ctx) => {
 
     if (data === 'strm_back') {
         await ctx.answerCbQuery();
-        return ctx.editMessageText(STRM_MENU_TEXT, {
-            parse_mode: 'Markdown',
-            reply_markup: STRM_MENU_KEYBOARD()
-        });
+        await ctx.deleteMessage().catch(() => {});
+        return sendGenMenu(ctx);
     }
 
     if (data === 'strm_check_stock') {
@@ -365,13 +385,11 @@ bot.action(/^strm_/, async (ctx) => {
 
         regionButtons.push([styledBtn('🔙 နောက်သို့', 'strm_back', 'danger')]);
 
-        return ctx.editMessageText(
-            `🌍 *${platform.toUpperCase()}* အတွက် လိုချင်သော Region (နိုင်ငံ) ကို ရွေးချယ်ပါ-`,
-            {
-                parse_mode: 'Markdown',
-                reply_markup: { inline_keyboard: regionButtons }
-            }
-        );
+        const regionText = `🌍 *${platform.toUpperCase()}* အတွက် လိုချင်သော Region (နိုင်ငံ) ကို ရွေးချယ်ပါ-`;
+        const regionExtra = { parse_mode: 'Markdown', reply_markup: { inline_keyboard: regionButtons } };
+        return ctx.callbackQuery.message?.photo
+            ? ctx.editMessageCaption(regionText, regionExtra)
+            : ctx.editMessageText(regionText, regionExtra);
     }
 
     if (data.startsWith('strm_gen_')) {
@@ -380,10 +398,15 @@ bot.action(/^strm_/, async (ctx) => {
         const region = parts[3];
 
         await ctx.answerCbQuery('အကောင့်ထုတ်ယူနေပါသည်...');
-        await ctx.editMessageText(
-            `⏳ *${platform.toUpperCase()} (${region})* အကောင့် ထုတ်ယူနေပါသည်၊ ခဏစောင့်ပါ...`,
-            { parse_mode: 'Markdown' }
-        );
+        const progressText = `⏳ *${platform.toUpperCase()} (${region})* အကောင့် ထုတ်ယူနေပါသည်၊ ခဏစောင့်ပါ...`;
+        let msgId = ctx.callbackQuery.message.message_id;
+        if (ctx.callbackQuery.message.photo) {
+            await ctx.deleteMessage().catch(() => {});
+            msgId = (await ctx.reply(progressText, { parse_mode: 'Markdown' })).message_id;
+        } else {
+            await ctx.editMessageText(progressText, { parse_mode: 'Markdown' });
+        }
+        const editResult = (text, extra) => ctx.telegram.editMessageText(ctx.chat.id, msgId, undefined, text, extra);
 
         const result = await generateStreamingAccount(platform, region);
 
@@ -407,12 +430,12 @@ bot.action(/^strm_/, async (ctx) => {
                 `──────────────────\n` +
                 `💳 *သုံးစွဲမှု:* ${bill.type_used || '-'} | *လက်ကျန် Quota:* \`${bill.remaining_quota ?? '-'}\` | *Credits:* \`${bill.remaining_credits ?? '-'}\``;
 
-            return ctx.editMessageText(successMsg, {
+            return editResult(successMsg, {
                 parse_mode: 'Markdown',
                 disable_web_page_preview: true
             });
         } else {
-            return ctx.editMessageText(
+            return editResult(
                 `❌ *အကောင့်ထုတ်ယူမှု မအောင်မြင်ပါ*\n` +
                 `အကြောင်းအရင်း: ${result?.message || 'Stock ကုန်နေသည် သို့မဟုတ် API Key မှားယွင်းနေပါသည်'}\n` +
                 `*(မှတ်ချက် - မအောင်မြင်သည့်အတွက် သင်၏ Quota/Credit လုံးဝ မဖြတ်ပါ)*`,
