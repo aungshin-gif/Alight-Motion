@@ -1,5 +1,5 @@
 // src/resellerApi.js
-const BASE_URL = process.env.RESELLER_BASE_URL || 'https://YOUR_API_DOMAIN';
+const BASE_URL = (process.env.RESELLER_BASE_URL || 'https://api.duniakonter.com').replace(/\/+$/, '');
 const API_KEY = process.env.RESELLER_API_KEY || '';
 const SECRET_KEY = process.env.RESELLER_SECRET_KEY || '';
 
@@ -9,16 +9,12 @@ const getHeaders = () => ({
     'X-Secret-Key': SECRET_KEY
 });
 
-/**
- * ၁။ Streaming အကောင့်အသစ် ထုတ်ယူခြင်း (POST /api/v1/generate)
- */
 async function generateStreamingAccount(platform = 'netflix', region = null) {
     try {
         const body = { platform };
         if (region && region !== 'AUTO') {
             body.region = region;
         }
-
         const res = await fetch(`${BASE_URL}/api/v1/generate`, {
             method: 'POST',
             headers: getHeaders(),
@@ -30,9 +26,6 @@ async function generateStreamingAccount(platform = 'netflix', region = null) {
     }
 }
 
-/**
- * ၂။ မိမိ၏ Reseller Profile နှင့် လက်ကျန် Quota စစ်ဆေးခြင်း (GET /api/v1/profile)
- */
 async function checkResellerProfile() {
     try {
         const res = await fetch(`${BASE_URL}/api/v1/profile`, {
@@ -45,9 +38,6 @@ async function checkResellerProfile() {
     }
 }
 
-/**
- * ၃။ လက်ကျန် Stock စာရင်း စစ်ဆေးခြင်း (GET /api/v1/stock)
- */
 async function checkStreamingStock() {
     try {
         const res = await fetch(`${BASE_URL}/api/v1/stock`, {
