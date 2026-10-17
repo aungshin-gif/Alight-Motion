@@ -782,6 +782,22 @@ function styledBtn(text, data, style) {
     return { ...Markup.button.callback(text, data), style };
 }
 
+function styledUrlBtn(text, url, style) {
+    return { ...Markup.button.url(text, url), style };
+}
+
+// Efek perayaan 🎉 (confetti) setelah akun berhasil dibuat. Tidak pernah mengganggu alur utama.
+const PARTY_EFFECT_ID = '5046509860389126442';
+async function sendCelebration(telegram, chatId) {
+    try {
+        try {
+            await telegram.sendMessage(chatId, '🎉', { message_effect_id: PARTY_EFFECT_ID });
+        } catch {
+            await telegram.sendMessage(chatId, '🎉');
+        }
+    } catch { }
+}
+
 // -------------------------------------------------------------
 // Keyboard Menu Utama (Publik - Grid 2x2 Kompak & Rapi)
 // -------------------------------------------------------------
@@ -2168,11 +2184,11 @@ bot.action('menu_single', async (ctx) => {
             `✨ Thank you for choosing us!`;
 
         const keyboard = Markup.inlineKeyboard([
-            [Markup.button.url(i18n.t(lang, 'single.btn_login'), loginLink)],
-            [Markup.button.callback(i18n.t(lang, 'single.btn_check_otp'), `check_otp_${email}`)],
+            [styledUrlBtn(i18n.t(lang, 'single.btn_login'), loginLink, 'success')],
+            [styledBtn(i18n.t(lang, 'single.btn_check_otp'), `check_otp_${email}`, 'primary')],
             [
-                Markup.button.callback(i18n.t(lang, 'single.btn_create_again'), 'menu_single'),
-                Markup.button.callback(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main')
+                styledBtn(i18n.t(lang, 'single.btn_create_again'), 'menu_single', 'success'),
+                styledBtn(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main', 'primary')
             ]
         ]);
 
@@ -2192,6 +2208,7 @@ bot.action('menu_single', async (ctx) => {
 
         // Kirim notifikasi bukti aktivasi ke Channel Telegram (Live)
         sendChannelNotification('SINGLE', { email, user: ctx.from });
+        sendCelebration(ctx.telegram, ctx.chat.id);
     } catch (err) {
         handleAutoMaintenanceTrigger(err.message, 'AKUN SATUAN');
         logInfo('INSTAN', `❌ GAGAL User ${userId}: ${err.message}`);
@@ -2933,10 +2950,10 @@ async function startBulkJob(jobData) {
                 `${i18n.t(lang, 'bulk.file_footer')}`;
 
             const resultKb = Markup.inlineKeyboard([
-                [Markup.button.callback(i18n.t(lang, 'single.btn_check_otp'), 'bulk_check_otp')],
+                [styledBtn(i18n.t(lang, 'single.btn_check_otp'), 'bulk_check_otp', 'primary')],
                 [
-                    Markup.button.callback(i18n.t(lang, 'bulk.btn_order_again'), 'menu_bulk'),
-                    Markup.button.callback(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main')
+                    styledBtn(i18n.t(lang, 'bulk.btn_order_again'), 'menu_bulk', 'success'),
+                    styledBtn(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main', 'primary')
                 ]
             ]);
 
@@ -2957,6 +2974,7 @@ async function startBulkJob(jobData) {
 
             // Kirim notifikasi pesanan masal ke Channel Telegram (Live)
             sendChannelNotification('BULK', { count: successCount, orderId: rangeOrderId, user: user || ctx?.from || currentJob?.user });
+            sendCelebration(telegram, chatId);
         } else {
             logInfo('BULK', `❌ GAGAL | Tidak ada akun yang berhasil dibuat untuk user ${userId}`);
             const errorText = `❌ *Tidak Ada Akun yang Berhasil*\n────────────\nTerjadi kendala saat memproses pesanan masal. Silakan coba lagi beberapa saat lagi.`;
@@ -3638,8 +3656,8 @@ bot.on('text', async (ctx) => {
 
             const keyboardButtons = [
                 [
-                    Markup.button.callback(i18n.t(lang, 'custom_email.btn_upgrade_again'), 'menu_custom_email'),
-                    Markup.button.callback(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main')
+                    styledBtn(i18n.t(lang, 'custom_email.btn_upgrade_again'), 'menu_custom_email', 'success'),
+                    styledBtn(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main', 'primary')
                 ]
             ];
 
@@ -3651,6 +3669,7 @@ bot.on('text', async (ctx) => {
             // Kirim notifikasi upgrade email ke Channel Telegram (Live)
             logInfo('UPGRADE', `✅ SUKSES | ${email} Aktif 1 Tahun`);
             sendChannelNotification('CUSTOM_EMAIL', { email, user: ctx.from });
+            sendCelebration(ctx.telegram, ctx.chat.id);
         } catch (err) {
             await ctx.telegram.editMessageText(
                 ctx.chat.id,
