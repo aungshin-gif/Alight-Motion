@@ -2396,11 +2396,11 @@ bot.action('menu_single', async (ctx) => {
             `✨ Thank you for choosing us!`;
 
         const keyboard = Markup.inlineKeyboard([
-            [styledUrlBtn(i18n.t(lang, 'single.btn_login'), loginLink, 'success')],
-            [styledBtn(i18n.t(lang, 'single.btn_check_otp'), `check_otp_${email}`, 'primary')],
+            [styledUrlBtn('🪄 Login to Alight Motion', loginLink, 'success')],
+            [styledBtn('📫 Check Inbox / OTP', `check_otp_${email}`, 'primary')],
             [
-                styledBtn(i18n.t(lang, 'single.btn_create_again'), 'menu_single', 'success'),
-                styledBtn(i18n.t(lang, 'menu.btn_main_menu'), 'menu_main', 'primary')
+                styledBtn('⚡ Create Another Account', 'menu_single', 'success'),
+                styledBtn('🏠 Main Menu', 'menu_main', 'danger')
             ]
         ]);
 
